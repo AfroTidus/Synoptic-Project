@@ -189,11 +189,6 @@ MonoBehaviour:
   player: {fileID: 1390456280}
   speed: 5
   stoppingDistance: 3
-  avoidanceRadius: 1
-  followerLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  positionThreshold: 0.05
 --- !u!54 &36423980
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -398,11 +393,6 @@ MonoBehaviour:
   player: {fileID: 1390456280}
   speed: 5
   stoppingDistance: 3
-  avoidanceRadius: 1
-  followerLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  positionThreshold: 0.05
 --- !u!54 &115689609
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -978,11 +968,6 @@ MonoBehaviour:
   player: {fileID: 1390456280}
   speed: 5
   stoppingDistance: 3
-  avoidanceRadius: 1
-  followerLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  positionThreshold: 0.05
 --- !u!54 &268696590
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2807,11 +2792,6 @@ MonoBehaviour:
   player: {fileID: 1390456280}
   speed: 5
   stoppingDistance: 3
-  avoidanceRadius: 1
-  followerLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  positionThreshold: 0.05
 --- !u!54 &917364344
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3331,11 +3311,6 @@ MonoBehaviour:
   player: {fileID: 1390456280}
   speed: 5
   stoppingDistance: 3
-  avoidanceRadius: 1
-  followerLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  positionThreshold: 0.05
 --- !u!54 &1062987290
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3678,11 +3653,6 @@ MonoBehaviour:
   player: {fileID: 1390456280}
   speed: 5
   stoppingDistance: 3
-  avoidanceRadius: 1
-  followerLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  positionThreshold: 0.05
 --- !u!54 &1205131918
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3922,11 +3892,6 @@ MonoBehaviour:
   player: {fileID: 1390456280}
   speed: 5
   stoppingDistance: 3
-  avoidanceRadius: 1
-  followerLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  positionThreshold: 0.05
 --- !u!54 &1236224186
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4815,6 +4780,7 @@ GameObject:
   - component: {fileID: 1390456282}
   - component: {fileID: 1390456283}
   - component: {fileID: 1390456284}
+  - component: {fileID: 1390456285}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -4927,6 +4893,24 @@ MonoBehaviour:
   cam: {fileID: 963194228}
   speed: 6
   turnSmoothTime: 0.1
+--- !u!114 &1390456285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1390456279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7154eb3f66600f94cad14bf379ab4766, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  detectionRadius: 5
+  removalRadius: 7
+  followerLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  followers: []
 --- !u!1 &1499813363
 GameObject:
   m_ObjectHideFlags: 0
@@ -5197,11 +5181,6 @@ MonoBehaviour:
   player: {fileID: 1390456280}
   speed: 5
   stoppingDistance: 3
-  avoidanceRadius: 1
-  followerLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  positionThreshold: 0.05
 --- !u!1 &1691927238
 GameObject:
   m_ObjectHideFlags: 0
@@ -5689,11 +5668,6 @@ MonoBehaviour:
   player: {fileID: 1390456280}
   speed: 5
   stoppingDistance: 3
-  avoidanceRadius: 1
-  followerLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  positionThreshold: 0.05
 --- !u!54 &1921952348
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5931,11 +5905,6 @@ MonoBehaviour:
   player: {fileID: 1390456280}
   speed: 5
   stoppingDistance: 3
-  avoidanceRadius: 1
-  followerLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  positionThreshold: 0.05
 --- !u!54 &2009650790
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6245,11 +6214,6 @@ MonoBehaviour:
   player: {fileID: 1390456280}
   speed: 5
   stoppingDistance: 3
-  avoidanceRadius: 1
-  followerLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  positionThreshold: 0.05
 --- !u!54 &2059933963
 Rigidbody:
   m_ObjectHideFlags: 0
