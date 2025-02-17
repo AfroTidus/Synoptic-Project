@@ -189,6 +189,9 @@ MonoBehaviour:
   player: {fileID: 1390456280}
   speed: 5
   stoppingDistance: 3
+  throwForce: 20
+  throwOffset: 1.5
+  throwDuration: 2
 --- !u!54 &36423980
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -393,6 +396,9 @@ MonoBehaviour:
   player: {fileID: 1390456280}
   speed: 5
   stoppingDistance: 3
+  throwForce: 20
+  throwOffset: 1.5
+  throwDuration: 2
 --- !u!54 &115689609
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -968,6 +974,9 @@ MonoBehaviour:
   player: {fileID: 1390456280}
   speed: 5
   stoppingDistance: 3
+  throwForce: 20
+  throwOffset: 1.5
+  throwDuration: 2
 --- !u!54 &268696590
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2792,6 +2801,9 @@ MonoBehaviour:
   player: {fileID: 1390456280}
   speed: 5
   stoppingDistance: 3
+  throwForce: 20
+  throwOffset: 1.5
+  throwDuration: 2
 --- !u!54 &917364344
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3311,6 +3323,9 @@ MonoBehaviour:
   player: {fileID: 1390456280}
   speed: 5
   stoppingDistance: 3
+  throwForce: 20
+  throwOffset: 1.5
+  throwDuration: 2
 --- !u!54 &1062987290
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3653,6 +3668,9 @@ MonoBehaviour:
   player: {fileID: 1390456280}
   speed: 5
   stoppingDistance: 3
+  throwForce: 20
+  throwOffset: 1.5
+  throwDuration: 2
 --- !u!54 &1205131918
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3892,6 +3910,9 @@ MonoBehaviour:
   player: {fileID: 1390456280}
   speed: 5
   stoppingDistance: 3
+  throwForce: 20
+  throwOffset: 1.5
+  throwDuration: 2
 --- !u!54 &1236224186
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5181,6 +5202,9 @@ MonoBehaviour:
   player: {fileID: 1390456280}
   speed: 5
   stoppingDistance: 3
+  throwForce: 10
+  throwOffset: 1.5
+  throwDuration: 2
 --- !u!1 &1691927238
 GameObject:
   m_ObjectHideFlags: 0
@@ -5668,6 +5692,9 @@ MonoBehaviour:
   player: {fileID: 1390456280}
   speed: 5
   stoppingDistance: 3
+  throwForce: 20
+  throwOffset: 1.5
+  throwDuration: 2
 --- !u!54 &1921952348
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5905,6 +5932,9 @@ MonoBehaviour:
   player: {fileID: 1390456280}
   speed: 5
   stoppingDistance: 3
+  throwForce: 20
+  throwOffset: 1.5
+  throwDuration: 2
 --- !u!54 &2009650790
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6214,6 +6244,9 @@ MonoBehaviour:
   player: {fileID: 1390456280}
   speed: 5
   stoppingDistance: 3
+  throwForce: 20
+  throwOffset: 1.5
+  throwDuration: 2
 --- !u!54 &2059933963
 Rigidbody:
   m_ObjectHideFlags: 0
