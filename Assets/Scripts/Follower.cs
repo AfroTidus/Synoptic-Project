@@ -12,6 +12,7 @@ public class Follower : MonoBehaviour
     public float throwDuration = 2f; // Time before follower resumes following
     private Rigidbody rb;
     private bool isIdle = false; // New flag to track idle state
+    private bool isBusy = false; // Tracks if the follower is busy
 
     void Start()
     {
@@ -27,7 +28,7 @@ public class Follower : MonoBehaviour
         }
 
         // If the follower is idle or thrown, do not follow the player
-        if (isIdle) return;
+        if (isIdle || isBusy) return;
 
         // Calculate distance to the player
         float distance = Vector3.Distance(transform.position, player.position);
@@ -68,10 +69,22 @@ public class Follower : MonoBehaviour
     public void SetIdle(bool idle)
     {
         isIdle = idle;
+        if (idle) isBusy = false; // Ensure the follower is not busy if set to idle
     }
 
     public bool IsIdle()
     {
         return isIdle;
+    }
+
+    public void SetBusy(bool busy)
+    {
+        isBusy = busy;
+        if (busy) isIdle = false; // Ensure the follower is not idle if set to busy
+    }
+
+    public bool IsBusy()
+    {
+        return isBusy;
     }
 }

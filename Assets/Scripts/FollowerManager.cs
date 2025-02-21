@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class FollowerManager : MonoBehaviour
 {
+    public static FollowerManager Instance;
+
     public float detectionRadius = 5f; // Radius to detect and add followers
     public float removalRadius = 7f; // Radius to remove followers
     public LayerMask followerLayer; // Layer to detect followers
@@ -11,6 +13,23 @@ public class FollowerManager : MonoBehaviour
     public List<GameObject> followers = new List<GameObject>(); // Followers within proximity
     public List<GameObject> idleFollowers = new List<GameObject>(); // Idle followers
     public List<GameObject> busyFollowers = new List<GameObject>(); // Busy followers (for future use)
+
+    // Event to notify when a follower is recalled
+    public delegate void FollowerRecalledHandler(GameObject follower);
+    public static event FollowerRecalledHandler OnFollowerRecalled;
+
+    void Awake()
+    {
+        // Singleton pattern
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Update()
     {
@@ -24,6 +43,11 @@ public class FollowerManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             RecallIdleFollowers();
+        }
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            RecallBusyFollowers();
         }
     }
 
@@ -79,7 +103,28 @@ public class FollowerManager : MonoBehaviour
         }
     }
 
-    void SetFollowerState(GameObject follower, FollowerState state)
+    void RecallBusyFollowers()
+    {
+        // Create a copy of the busyFollowers list to avoid modifying it while iterating
+        List<GameObject> busyFollowersCopy = new List<GameObject>(busyFollowers);
+
+        foreach (GameObject follower in busyFollowersCopy)
+        {
+            Follower followerScript = follower.GetComponent<Follower>();
+            if (followerScript != null)
+            {
+                followerScript.SetBusy(false); // Reset the busy state
+                SetFollowerState(follower, FollowerState.Following); // Move back to the proximity list
+
+                // Notify all Interactable objects that this follower has been recalled
+                OnFollowerRecalled?.Invoke(follower);
+
+                Debug.Log(follower.name + " recalled from busy and moved to followers list.");
+            }
+        }
+    }
+
+    public void SetFollowerState(GameObject follower, FollowerState state)
     {
         // Remove the follower from all lists
         followers.Remove(follower);
@@ -91,12 +136,15 @@ public class FollowerManager : MonoBehaviour
         {
             case FollowerState.Following:
                 followers.Add(follower);
+                Debug.Log(follower.name + " moved to followers list.");
                 break;
             case FollowerState.Idle:
                 idleFollowers.Add(follower);
+                Debug.Log(follower.name + " moved to idleFollowers list.");
                 break;
             case FollowerState.Busy:
                 busyFollowers.Add(follower);
+                Debug.Log(follower.name + " moved to busyFollowers list.");
                 break;
         }
     }
