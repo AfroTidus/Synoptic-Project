@@ -11,12 +11,11 @@ public class Follower : MonoBehaviour
     public float throwOffset = 1.5f; // Offset in front of the player
     public float throwDuration = 2f; // Time before follower resumes following
     private Rigidbody rb;
-    private bool isThrown = false;
+    private bool isIdle = false; // New flag to track idle state
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-
     }
 
     void Update()
@@ -27,8 +26,8 @@ public class Follower : MonoBehaviour
             return;
         }
 
-        //Alternatively follower goes inactive until a recall button is pressed
-        if (isThrown) return;
+        // If the follower is idle or thrown, do not follow the player
+        if (isIdle) return;
 
         // Calculate distance to the player
         float distance = Vector3.Distance(transform.position, player.position);
@@ -61,80 +60,18 @@ public class Follower : MonoBehaviour
         Vector3 launchDirection = player.forward;
         rb.AddForce(launchDirection * throwForce, ForceMode.Impulse);
 
-        StartCoroutine(ThrowCooldown());
+        SetIdle(true);
 
         Debug.Log(name + " has been thrown!");
     }
 
-    private IEnumerator ThrowCooldown()
+    public void SetIdle(bool idle)
     {
-        isThrown = true;
-        yield return new WaitForSeconds(throwDuration);
-        isThrown = false;
+        isIdle = idle;
     }
 
-
-    //public Transform player;  // Assign the player object in the inspector
-    //public float speed = 5f; // Speed of the follower
-    //public float stoppingDistance = 2f; // Distance to maintain from the player
-    //public float avoidanceRadius = 1f; // Radius to avoid other followers
-    //public LayerMask followerLayer; // Layer to detect other followers
-    //public float positionThreshold = 0.05f; // Threshold to prevent jittering
-    //private Rigidbody rb;
-
-    //void Start()
-    //{
-    //    rb = GetComponent<Rigidbody>();
-    //    rb.interpolation = RigidbodyInterpolation.Interpolate;
-    //    rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
-    //}
-
-    //void FixedUpdate()
-    //{
-    //    if (player == null)
-    //    {
-    //        Debug.LogWarning("Player not assigned to follower script.");
-    //        return;
-    //    }
-
-    //    // Calculate distance to the player
-    //    float distance = Vector3.Distance(transform.position, player.position);
-
-    //    // Maintain distance from the player only if necessary
-    //    if (Mathf.Abs(distance - stoppingDistance) > positionThreshold)
-    //    {
-    //        Vector3 direction = (transform.position - player.position).normalized;
-    //        Vector3 targetPosition = player.position + direction * stoppingDistance;
-
-    //        // Avoid other followers
-    //        Collider[] nearbyFollowers = Physics.OverlapSphere(transform.position, avoidanceRadius, followerLayer);
-    //        Vector3 avoidanceVector = Vector3.zero;
-    //        int avoidCount = 0;
-
-    //        foreach (Collider follower in nearbyFollowers)
-    //        {
-    //            if (follower.transform != transform)
-    //            {
-    //                avoidanceVector += (transform.position - follower.transform.position).normalized;
-    //                avoidCount++;
-    //            }
-    //        }
-
-    //        if (avoidCount > 0)
-    //        {
-    //            avoidanceVector /= avoidCount;
-    //            targetPosition += avoidanceVector * 0.5f; // Smooth adjustment to avoid crowding
-    //        }
-
-    //        rb.MovePosition(Vector3.MoveTowards(rb.position, targetPosition, speed * Time.fixedDeltaTime));
-    //    }
-
-    //    // Rotate to face the player smoothly
-    //    Vector3 lookDirection = (player.position - transform.position).normalized;
-    //    if (lookDirection.magnitude > 0.1f)
-    //    {
-    //        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(lookDirection.x, 0, lookDirection.z));
-    //        rb.MoveRotation(Quaternion.Slerp(rb.rotation, lookRotation, Time.fixedDeltaTime * speed));
-    //    }
-    //}
+    public bool IsIdle()
+    {
+        return isIdle;
+    }
 }
