@@ -35,9 +35,9 @@ public class FollowerManager : MonoBehaviour
     {
         DetectAndManageFollowers();
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.Q))
         {
-            ExecuteFollowerAction();
+            ExecuteFollowerThrow();
         }
 
         if (Input.GetKeyDown(KeyCode.R))
@@ -73,7 +73,7 @@ public class FollowerManager : MonoBehaviour
         followers.RemoveAll(follower => !detectedSet.Contains(follower));
     }
 
-    void ExecuteFollowerAction()
+    void ExecuteFollowerThrow()
     {
         if (followers.Count > 0)
         {
@@ -81,7 +81,7 @@ public class FollowerManager : MonoBehaviour
             Follower followerScript = follower.GetComponent<Follower>();
             if (followerScript != null)
             {
-                followerScript.PerformAction();
+                followerScript.Throw();
                 SetFollowerState(follower, FollowerState.Idle); // Set the follower to idle after performing the action
             }
         }

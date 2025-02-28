@@ -4,19 +4,26 @@ using UnityEngine;
 
 public class Follower : MonoBehaviour
 {
-    public Transform player;  // Assign the player object in the inspector
+    private Transform player;  // Assign the player object in the inspector
     public float speed = 5f; // Speed of the follower
-    public float stoppingDistance = 2f; // Distance to maintain from the player
-    public float throwForce = 20f; // Force applied when thrown
+    public float stoppingDistance = 3f; // Distance to maintain from the player
+    public float throwForce = 15f; // Force applied when thrown
     public float throwOffset = 1.5f; // Offset in front of the player
     public float throwDuration = 2f; // Time before follower resumes following
     private Rigidbody rb;
-    private bool isIdle = false; // New flag to track idle state
-    private bool isBusy = false; // Tracks if the follower is busy
+    private bool isIdle = false;
+    private bool isBusy = false;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+        player = GameObject.Find("Player").transform;
+        //SetIdle(true);
+    }
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+
     }
 
     void Update()
@@ -47,9 +54,9 @@ public class Follower : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * speed);
     }
 
-    public void PerformAction()
+    public void Throw()
     {
-        Debug.Log(name + " is performing an action!");
+        Debug.Log(name + " is being thrown!");
 
         if (player == null || rb == null) return;
 
