@@ -8,6 +8,8 @@ public class Interactable : MonoBehaviour
     public float removalRadius = 7f; // Radius to remove followers
     public LayerMask followerLayer; // Layer to detect followers
 
+    public GameObject prompt;
+
     public List<GameObject> Workers = new List<GameObject>(); // Followers within proximity
     private FollowerManager followerManager;
 
@@ -40,7 +42,7 @@ public class Interactable : MonoBehaviour
 
     void DetectAndAssignWorkers()
     {
-        // Detect followers within the detection radius
+        // Detect followers within the radius
         Collider[] detectedFollowers = Physics.OverlapSphere(transform.position, detectionRadius, followerLayer);
 
         foreach (Collider col in detectedFollowers)
@@ -67,9 +69,9 @@ public class Interactable : MonoBehaviour
             }
         }
 
-        // Remove followers that are outside the removal radius
+        // Remove followers that are outside the radius
         Workers.RemoveAll(follower => {
-            if (follower == null) return true; // Remove if the follower is destroyed
+            if (follower == null) return true; // Remove if destroyed
 
             float distance = Vector3.Distance(transform.position, follower.transform.position);
             if (distance > removalRadius)
@@ -81,7 +83,7 @@ public class Interactable : MonoBehaviour
                     {
                         followerScript.SetBusy(false); // Reset the busy state
 
-                        // Notify the FollowerManager to move the follower back to idleFollowers
+                        // Tell FollowerManager to move the follower back to idleFollowers
                         if (followerManager != null)
                         {
                             followerManager.SetFollowerState(follower, FollowerState.Idle);
@@ -104,9 +106,18 @@ public class Interactable : MonoBehaviour
         }
     }
 
+    public void Locked()
+    {
+        prompt.SetActive(true);
+    }
+
+    public void UnLocked()
+    {
+        prompt.SetActive(false);
+    }
+
     void OnDrawGizmosSelected()
     {
-        // Draw the detection and removal radii in the editor for debugging
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
 

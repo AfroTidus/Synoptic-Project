@@ -10,12 +10,23 @@ public class PlayerController : MonoBehaviour
     public float turnSmoothTime = 0.1f;
     private float turnSmoothVelocity;
 
+    public float lockOnRange = 5f;
+    public List<Interactable> nearbyInteractables = new List<Interactable>();
+    private int currentInteractableIndex = -1;
+    private Interactable lockedInteractable = null;
+
     private void Start()
     {
         characterController = GetComponent<CharacterController>();
     }
     // Update is called once per frame
     void Update()
+    {
+        Movement();
+        CheckInteractables();
+    }
+
+    void Movement()
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
@@ -37,5 +48,84 @@ public class PlayerController : MonoBehaviour
         {
             characterController.Move(velocity);
         }
+    }
+
+    void CheckInteractables()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            if (lockedInteractable == null)
+            {
+                DetectNearbyInteractables();
+                if (nearbyInteractables.Count > 0)
+                {
+                    LockOnToInteractable(0);
+                }
+            }
+            else
+            {
+                CycleInteractables();
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            UnlockInteractable();
+        }
+    }
+
+    void DetectNearbyInteractables()
+    {
+        nearbyInteractables.Clear();
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, lockOnRange);
+        foreach (var hitCollider in hitColliders)
+        {
+            Interactable interactable = hitCollider.GetComponent<Interactable>();
+            if (interactable != null)
+            {
+                nearbyInteractables.Add(interactable);
+            }
+        }
+    }
+
+    void LockOnToInteractable(int index)
+    {
+        if (lockedInteractable != null)
+        {
+            lockedInteractable.UnLocked();
+            Debug.Log("Unlocked");
+        }
+
+        lockedInteractable = nearbyInteractables[index];
+        lockedInteractable.Locked();
+        Debug.Log("Locked On");
+        currentInteractableIndex = index;
+    }
+
+    void CycleInteractables()
+    {
+        DetectNearbyInteractables();
+        if (nearbyInteractables.Count == 0) return;
+
+        currentInteractableIndex = (currentInteractableIndex + 1) % nearbyInteractables.Count;
+        LockOnToInteractable(currentInteractableIndex);
+    }
+
+    void UnlockInteractable()
+    {
+        if (lockedInteractable != null)
+        {
+            lockedInteractable.UnLocked();
+            Debug.Log("Unlocked");
+            lockedInteractable = null;
+            //currentInteractableIndex = -1;
+            nearbyInteractables.Clear();
+        }
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, lockOnRange);
     }
 }

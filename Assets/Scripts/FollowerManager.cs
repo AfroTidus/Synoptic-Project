@@ -12,7 +12,7 @@ public class FollowerManager : MonoBehaviour
 
     public List<GameObject> followers = new List<GameObject>(); // Followers within proximity
     public List<GameObject> idleFollowers = new List<GameObject>(); // Idle followers
-    public List<GameObject> busyFollowers = new List<GameObject>(); // Busy followers (for future use)
+    public List<GameObject> busyFollowers = new List<GameObject>(); // Busy followers
 
     // Event to notify when a follower is recalled
     public delegate void FollowerRecalledHandler(GameObject follower);
@@ -20,7 +20,6 @@ public class FollowerManager : MonoBehaviour
 
     void Awake()
     {
-        // Singleton pattern
         if (Instance == null)
         {
             Instance = this;
@@ -89,7 +88,6 @@ public class FollowerManager : MonoBehaviour
 
     void RecallIdleFollowers()
     {
-        // Create a copy of the idleFollowers list to avoid modifying it while iterating
         List<GameObject> idleFollowersCopy = new List<GameObject>(idleFollowers);
 
         foreach (GameObject follower in idleFollowersCopy)
@@ -98,14 +96,13 @@ public class FollowerManager : MonoBehaviour
             if (followerScript != null)
             {
                 followerScript.SetIdle(false); // Reset the idle state
-                SetFollowerState(follower, FollowerState.Following); // Move back to the proximity list
+                SetFollowerState(follower, FollowerState.Following); // Move back to the original list
             }
         }
     }
 
     void RecallBusyFollowers()
     {
-        // Create a copy of the busyFollowers list to avoid modifying it while iterating
         List<GameObject> busyFollowersCopy = new List<GameObject>(busyFollowers);
 
         foreach (GameObject follower in busyFollowersCopy)
@@ -114,9 +111,9 @@ public class FollowerManager : MonoBehaviour
             if (followerScript != null)
             {
                 followerScript.SetBusy(false); // Reset the busy state
-                SetFollowerState(follower, FollowerState.Following); // Move back to the proximity list
+                SetFollowerState(follower, FollowerState.Following); // Move back to original list
 
-                // Notify all Interactable objects that this follower has been recalled
+                // Notify Interactable that follower has been recalled
                 OnFollowerRecalled?.Invoke(follower);
 
                 Debug.Log(follower.name + " recalled from busy and moved to followers list.");
@@ -154,5 +151,5 @@ public enum FollowerState
 {
     Following, // Actively following the player
     Idle,      // Idle and not following the player
-    Busy       // Busy with a task (for future use)
+    Busy       // Busy with a task
 }

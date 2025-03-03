@@ -42,7 +42,7 @@ public class Spawner : MonoBehaviour
     {
         if (followerType != null)
         {
-            // Instantiate the follower at the spawner's position
+            // Instantiate the follower
             Instantiate(followerType, transform.position, transform.rotation);
             Debug.Log("Follower spawned!");
         }
