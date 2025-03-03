@@ -5,6 +5,7 @@ using UnityEngine;
 public class Spawner : MonoBehaviour
 {
     public GameObject followerType;
+    public GameObject prompt;
 
     private bool isPlayerInRadius = false;
 
@@ -22,6 +23,7 @@ public class Spawner : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerInRadius = true;
+            prompt.SetActive(true);
         }
     }
 
@@ -31,6 +33,8 @@ public class Spawner : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerInRadius = false;
+            prompt.SetActive(false);
+
         }
     }
 
