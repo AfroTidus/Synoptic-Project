@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     private int currentInteractableIndex = -1;
     private Interactable lockedInteractable = null;
 
+    private bool nearSpawner =  false;
+
     private void Start()
     {
         characterController = GetComponent<CharacterController>();
@@ -52,6 +54,18 @@ public class PlayerController : MonoBehaviour
 
     void CheckInteractables()
     {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            if (nearSpawner)
+            {
+                EventManager.TriggerEvent("PlayerPressedSpawnKey");
+            }
+            else
+            {
+                Debug.Log("No valid interaction");
+            }
+        }
+
         if (Input.GetKeyDown(KeyCode.L))
         {
             if (lockedInteractable == null)
@@ -120,6 +134,27 @@ public class PlayerController : MonoBehaviour
             lockedInteractable = null;
             //currentInteractableIndex = -1;
             nearbyInteractables.Clear();
+        }
+    }
+
+    // Collision logic
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Spawner"))
+        {
+            // Trigger the event when the player enters the spawn radius
+            EventManager.TriggerEvent("PlayerEnteredSpawnRadius", other.gameObject);
+            nearSpawner = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Spawner"))
+        {
+            // Trigger the event when the player exits the spawn radius
+            EventManager.TriggerEvent("PlayerExitedSpawnRadius", other.gameObject);
+            nearSpawner = false;
         }
     }
 
