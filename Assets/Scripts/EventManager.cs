@@ -37,6 +37,7 @@ public class EventManager : MonoBehaviour
         else
         {
             _instance = this;
+            DontDestroyOnLoad(gameObject);
             eventDictionary = new Dictionary<string, Action<object>>();
         }
     }
@@ -82,4 +83,15 @@ public class EventManager : MonoBehaviour
             thisEvent.Invoke(parameter);
         }
     }
+}
+
+public static class EventNames
+{
+    public const string PlayerEnteredSpawnRadius = "PlayerEnteredSpawnRadius";
+    public const string PlayerExitedSpawnRadius = "PlayerExitedSpawnRadius";
+    public const string PlayerPressedSpawnKey = "PlayerPressedSpawnKey";
+
+    public const string FollowerStateChanged = "FollowerStateChanged";
+    public const string FollowerThrown = "FollowerThrown";
+    public const string FollowerRecalled = "FollowerRecalled";
 }

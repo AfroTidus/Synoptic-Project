@@ -11,28 +11,18 @@ public class Interactable : MonoBehaviour
     public GameObject prompt;
 
     public List<GameObject> Workers = new List<GameObject>(); // Followers within proximity
-    private FollowerManager followerManager;
+    //private FollowerManager followerManager;
 
-    void Start()
+    private void OnEnable()
     {
-        FollowerManager.OnFollowerRecalled += OnFollowerRecalled;
-
-        // Find the FollowerManager in the scene
-        followerManager = FindObjectOfType<FollowerManager>();
-        if (followerManager == null)
-        {
-            Debug.LogError("FollowerManager not found in the scene!");
-        }
-        else
-        {
-            Debug.Log("FollowerManager reference set successfully.");
-        }
+        // Subscribe to events
+        EventManager.StartListening(EventNames.FollowerRecalled, OnFollowerRecalled);
     }
 
-    void OnDestroy()
+    private void OnDisable()
     {
-        // Unsubscribe from the recall event to avoid memory leaks
-        FollowerManager.OnFollowerRecalled -= OnFollowerRecalled;
+        // Unsubscribe from events
+        EventManager.StopListening(EventNames.FollowerRecalled, OnFollowerRecalled);
     }
 
     void Update()
@@ -55,17 +45,21 @@ public class Interactable : MonoBehaviour
             {
                 // Set the follower to busy and assign it to this interactable
                 followerScript.SetBusy(true);
-                if (followerManager != null)
-                {
-                    followerManager.SetFollowerState(follower, FollowerState.Busy);
-                    Debug.Log(follower.name + " moved to busyFollowers list.");
-                }
-                else
-                {
-                    Debug.LogError("FollowerManager reference is null!");
-                }
+                FollowerManager.Instance.SetFollowerState(follower, FollowerState.Busy);
                 Workers.Add(follower);
                 Debug.Log(follower.name + " has been assigned to " + gameObject.name);
+                //followerScript.SetBusy(true);
+                //if (followerManager != null)
+                //{
+                //    followerManager.SetFollowerState(follower, FollowerState.Busy);
+                //    Debug.Log(follower.name + " moved to busyFollowers list.");
+                //}
+                //else
+                //{
+                //    Debug.LogError("FollowerManager reference is null!");
+                //}
+                //Workers.Add(follower);
+                //Debug.Log(follower.name + " has been assigned to " + gameObject.name);
             }
         }
 
@@ -79,16 +73,19 @@ public class Interactable : MonoBehaviour
                 Follower followerScript = follower.GetComponent<Follower>();
                 if (followerScript != null)
                 {
-                    if (Workers.Contains(follower))
-                    {
-                        followerScript.SetBusy(false); // Reset the busy state
+                    followerScript.SetBusy(false); // Reset the busy state
+                    FollowerManager.Instance.SetFollowerState(follower, FollowerState.Idle);
 
-                        // Tell FollowerManager to move the follower back to idleFollowers
-                        if (followerManager != null)
-                        {
-                            followerManager.SetFollowerState(follower, FollowerState.Idle);
-                        }
-                    }
+                    //if (Workers.Contains(follower))
+                    //{
+                    //    followerScript.SetBusy(false); // Reset the busy state
+
+                    //    // Tell FollowerManager to move the follower back to idleFollowers
+                    //    if (followerManager != null)
+                    //    {
+                    //        followerManager.SetFollowerState(follower, FollowerState.Idle);
+                    //    }
+                    //}
                 }
                 return true; // Remove from Workers list
             }
@@ -96,9 +93,9 @@ public class Interactable : MonoBehaviour
         });
     }
 
-    void OnFollowerRecalled(GameObject follower)
+    private void OnFollowerRecalled(object followerObj)
     {
-        // Remove the recalled follower from the Workers list if it exists
+        GameObject follower = (GameObject)followerObj;
         if (Workers.Contains(follower))
         {
             Workers.Remove(follower);
@@ -108,15 +105,21 @@ public class Interactable : MonoBehaviour
 
     public void Locked()
     {
-        prompt.SetActive(true);
+        if (prompt != null)
+        {
+            prompt.SetActive(true);
+        }
     }
 
     public void UnLocked()
     {
-        prompt.SetActive(false);
+        if (prompt != null)
+        {
+            prompt.SetActive(false);
+        }
     }
 
-    void OnDrawGizmosSelected()
+    void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);

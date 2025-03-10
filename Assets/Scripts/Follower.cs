@@ -21,11 +21,6 @@ public class Follower : MonoBehaviour
         //SetIdle(true);
     }
 
-    void Start()
-    {
-
-    }
-
     void Update()
     {
         if (player == null)
@@ -70,6 +65,8 @@ public class Follower : MonoBehaviour
 
         SetIdle(true);
 
+        EventManager.TriggerEvent("FollowerThrown", this.gameObject);
+
         Debug.Log(name + " has been thrown!");
     }
 
@@ -77,6 +74,7 @@ public class Follower : MonoBehaviour
     {
         isIdle = idle;
         if (idle) isBusy = false; // Ensure the follower is not busy if set to idle
+        NotifyStateChange();
     }
 
     public bool IsIdle()
@@ -88,10 +86,16 @@ public class Follower : MonoBehaviour
     {
         isBusy = busy;
         if (busy) isIdle = false; // Ensure the follower is not idle if set to busy
+        NotifyStateChange();
     }
 
     public bool IsBusy()
     {
         return isBusy;
+    }
+
+    private void NotifyStateChange()
+    {
+        EventManager.TriggerEvent("FollowerStateChanged", this.gameObject);
     }
 }

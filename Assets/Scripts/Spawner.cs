@@ -12,18 +12,28 @@ public class Spawner : MonoBehaviour
     private void OnEnable()
     {
         // Subscribe to events when the object is enabled
-        EventManager.StartListening("PlayerEnteredSpawnRadius", OnPlayerEnteredSpawnRadius);
-        EventManager.StartListening("PlayerExitedSpawnRadius", OnPlayerExitedSpawnRadius);
-        EventManager.StartListening("PlayerPressedSpawnKey", OnPlayerPressedSpawnKey);
+        EventManager.StartListening(EventNames.PlayerEnteredSpawnRadius, OnPlayerEnteredSpawnRadius);
+        EventManager.StartListening(EventNames.PlayerExitedSpawnRadius, OnPlayerExitedSpawnRadius);
+        EventManager.StartListening(EventNames.PlayerPressedSpawnKey, OnPlayerPressedSpawnKey);
     }
 
     private void OnDisable()
     {
         // Unsubscribe from events when the object is disabled to avoid memory leaks
-        EventManager.StopListening("PlayerEnteredSpawnRadius", OnPlayerEnteredSpawnRadius);
-        EventManager.StopListening("PlayerExitedSpawnRadius", OnPlayerExitedSpawnRadius);
-        EventManager.StopListening("PlayerPressedSpawnKey", OnPlayerPressedSpawnKey);
+        EventManager.StopListening(EventNames.PlayerEnteredSpawnRadius, OnPlayerEnteredSpawnRadius);
+        EventManager.StopListening(EventNames.PlayerExitedSpawnRadius, OnPlayerExitedSpawnRadius);
+        EventManager.StopListening(EventNames.PlayerPressedSpawnKey, OnPlayerPressedSpawnKey);
     }
+
+    private void Awake()
+    {
+        if (followerType == null)
+        {
+            Debug.LogError("Follower type is not assigned! Disabling spawner.");
+            enabled = false;
+        }
+    }
+
 
     private void OnPlayerEnteredSpawnRadius(object data)
     {
@@ -67,7 +77,7 @@ public class Spawner : MonoBehaviour
             Debug.LogWarning("Follower type is not assigned!");
         }
     }
-
+}
     //private void Update()
     //{
     //    // Check if the player is within the radius and presses the spawn key
@@ -110,4 +120,3 @@ public class Spawner : MonoBehaviour
     //        Debug.LogWarning("Follower type is not assigned!");
     //    }
     //}
-}
