@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4050764376477569097}
   - component: {fileID: 6624603570911402578}
   - component: {fileID: 6658043790775848592}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -126,6 +126,8 @@ MonoBehaviour:
   cam: {fileID: 0}
   speed: 6
   turnSmoothTime: 0.1
+  lockOnRange: 15
+  nearbyInteractables: []
 --- !u!114 &6658043790775848592
 MonoBehaviour:
   m_ObjectHideFlags: 0

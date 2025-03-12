@@ -31,14 +31,14 @@ public class FollowerManager : MonoBehaviour
     {
         // Subscribe to events
         EventManager.StartListening("FollowerStateChanged", OnFollowerStateChanged);
-        EventManager.StartListening("FollowerThrown", OnFollowerThrown);
+        //EventManager.StartListening("FollowerThrown", OnFollowerThrown);
     }
 
     private void OnDisable()
     {
         // Unsubscribe from events
         EventManager.StopListening("FollowerStateChanged", OnFollowerStateChanged);
-        EventManager.StopListening("FollowerThrown", OnFollowerThrown);
+        //EventManager.StopListening("FollowerThrown", OnFollowerThrown);
     }
 
     void Update()
@@ -92,7 +92,6 @@ public class FollowerManager : MonoBehaviour
             if (followerScript != null)
             {
                 followerScript.Throw();
-                SetFollowerState(follower, FollowerState.Idle); // Set the follower to idle after performing the action
             }
         }
     }
@@ -179,16 +178,16 @@ public class FollowerManager : MonoBehaviour
         }
     }
 
-    private void OnFollowerThrown(object followerObj)
-    {
-        GameObject follower = (GameObject)followerObj;
-        Follower followerScript = follower.GetComponent<Follower>();
+    //private void OnFollowerThrown(object followerObj)
+    //{
+    //    GameObject follower = (GameObject)followerObj;
+    //    Follower followerScript = follower.GetComponent<Follower>();
 
-        if (followerScript != null)
-        {
-            SetFollowerState(follower, FollowerState.Idle);
-        }
-    }
+    //    if (followerScript != null)
+    //    {
+    //        SetFollowerState(follower, FollowerState.Idle);
+    //    }
+    //}
 }
 
 public enum FollowerState

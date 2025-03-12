@@ -1,15 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Follower : MonoBehaviour
 {
-    private Transform player;  // Assign the player object in the inspector
+    private Transform player;
+    private NavMeshAgent agent;
     public float speed = 5f; // Speed of the follower
-    public float stoppingDistance = 3f; // Distance to maintain from the player
+    public float avoidanceDistance = 1.5f;
     public float throwForce = 15f; // Force applied when thrown
     public float throwOffset = 1.5f; // Offset in front of the player
-    public float throwDuration = 2f; // Time before follower resumes following
+    public float throwDuration = 1.5f; // Time before follower resumes following
     private Rigidbody rb;
     private bool isIdle = false;
     private bool isBusy = false;
@@ -17,8 +19,10 @@ public class Follower : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        agent = GetComponent<NavMeshAgent>();
         player = GameObject.Find("Player").transform;
-        //SetIdle(true);
+
+        rb.isKinematic = true;
     }
 
     void Update()
@@ -32,16 +36,7 @@ public class Follower : MonoBehaviour
         // If the follower is idle or thrown, do not follow the player
         if (isIdle || isBusy) return;
 
-        // Calculate distance to the player
-        float distance = Vector3.Distance(transform.position, player.position);
-
-        // Maintain distance from the player
-        if (Mathf.Abs(distance - stoppingDistance) > 0.1f)
-        {
-            Vector3 direction = (transform.position - player.position).normalized;
-            Vector3 targetPosition = player.position + direction * stoppingDistance;
-            transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
-        }
+        agent.SetDestination(player.position);
 
         // Rotate to face the player
         Vector3 lookDirection = (player.position - transform.position).normalized;
@@ -55,19 +50,38 @@ public class Follower : MonoBehaviour
 
         if (player == null || rb == null) return;
 
+        //agent.isStopped = true;
+        agent.enabled = false;
+        rb.isKinematic = false;
+
+        // Reset Rigidbody velocity and angular velocity
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
         // Set position slightly in front of the player before launch
         Vector3 throwPosition = player.position + player.forward * throwOffset;
         transform.position = throwPosition;
 
         // Launch follower in player's forward direction
-        Vector3 launchDirection = player.forward;
+        Vector3 launchDirection = (player.forward + Vector3.up * 0.2f).normalized;
         rb.AddForce(launchDirection * throwForce, ForceMode.Impulse);
 
-        SetIdle(true);
-
-        EventManager.TriggerEvent("FollowerThrown", this.gameObject);
-
+        StartCoroutine(SetIdleAfterThrow());
         Debug.Log(name + " has been thrown!");
+    }
+
+    private IEnumerator SetIdleAfterThrow()
+    {
+        // Wait for the throw duration
+        yield return new WaitForSeconds(throwDuration);
+
+        // Re-enable the NavMeshAgent and disable physics
+        rb.isKinematic = true;
+        rb.velocity = Vector3.zero; // Reset velocity
+        rb.angularVelocity = Vector3.zero; // Reset angular velocity
+        agent.enabled = true;
+
+        SetIdle(true);
     }
 
     public void SetIdle(bool idle)
@@ -99,3 +113,14 @@ public class Follower : MonoBehaviour
         EventManager.TriggerEvent("FollowerStateChanged", this.gameObject);
     }
 }
+
+//// Calculate distance to the player
+//float distance = Vector3.Distance(transform.position, player.position);
+
+//// Maintain distance from the player
+//if (Mathf.Abs(distance - stoppingDistance) > 0.1f)
+//{
+//    Vector3 direction = (transform.position - player.position).normalized;
+//    Vector3 targetPosition = player.position + direction * stoppingDistance;
+//    //transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
+//}
