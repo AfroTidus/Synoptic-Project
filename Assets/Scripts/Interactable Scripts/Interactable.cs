@@ -1,17 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class Interactable : MonoBehaviour
+public abstract class Interactable : MonoBehaviour
 {
+    public int softCap;
+    public int hardCap;
+
     public float detectionRadius = 5f; // Radius to detect and add followers
     public float removalRadius = 7f; // Radius to remove followers
     public LayerMask followerLayer; // Layer to detect followers
 
     public GameObject prompt;
+    public TextMeshPro counter;
 
     public List<GameObject> Workers = new List<GameObject>(); // Followers within proximity
-    //private FollowerManager followerManager;
 
     private void OnEnable()
     {
@@ -25,9 +30,37 @@ public class Interactable : MonoBehaviour
         EventManager.StopListening(EventNames.FollowerRecalled, OnFollowerRecalled);
     }
 
+    private void Start()
+    {
+        if (counter == null)
+        {
+            Debug.Log("Counter not assigned");
+        }
+        else
+        {
+            UpdateCounter();
+        }
+    }
+
     void Update()
     {
         DetectAndAssignWorkers();
+        CheckSoftCap();
+    }
+
+    void CheckSoftCap()
+    {
+        // Check if the soft cap is reached
+        if (Workers.Count >= softCap)
+        {
+            Debug.Log("Soft cap reached!");
+            OnSoftCapReached();
+        }
+        else if (Workers.Count < softCap)
+        {
+            Debug.Log("Soft cap no longer reached.");
+            OnSoftCapNotReached();
+        }
     }
 
     void DetectAndAssignWorkers()
@@ -41,25 +74,12 @@ public class Interactable : MonoBehaviour
             Follower followerScript = follower.GetComponent<Follower>();
 
             // Check if the follower is idle and not already assigned to this interactable
-            if (followerScript != null && followerScript.IsIdle() && !Workers.Contains(follower))
+            if (followerScript != null && followerScript.IsIdle() && !Workers.Contains(follower) && Workers.Count < hardCap)
             {
                 // Set the follower to busy and assign it to this interactable
                 followerScript.SetBusy(true);
-                FollowerManager.Instance.SetFollowerState(follower, FollowerState.Busy);
                 Workers.Add(follower);
                 Debug.Log(follower.name + " has been assigned to " + gameObject.name);
-                //followerScript.SetBusy(true);
-                //if (followerManager != null)
-                //{
-                //    followerManager.SetFollowerState(follower, FollowerState.Busy);
-                //    Debug.Log(follower.name + " moved to busyFollowers list.");
-                //}
-                //else
-                //{
-                //    Debug.LogError("FollowerManager reference is null!");
-                //}
-                //Workers.Add(follower);
-                //Debug.Log(follower.name + " has been assigned to " + gameObject.name);
             }
         }
 
@@ -74,23 +94,13 @@ public class Interactable : MonoBehaviour
                 if (followerScript != null)
                 {
                     followerScript.SetBusy(false); // Reset the busy state
-                    FollowerManager.Instance.SetFollowerState(follower, FollowerState.Idle);
-
-                    //if (Workers.Contains(follower))
-                    //{
-                    //    followerScript.SetBusy(false); // Reset the busy state
-
-                    //    // Tell FollowerManager to move the follower back to idleFollowers
-                    //    if (followerManager != null)
-                    //    {
-                    //        followerManager.SetFollowerState(follower, FollowerState.Idle);
-                    //    }
-                    //}
                 }
                 return true; // Remove from Workers list
             }
             return false; // Keep in Workers list
         });
+
+        UpdateCounter();
     }
 
     private void OnFollowerRecalled(object followerObj)
@@ -119,6 +129,11 @@ public class Interactable : MonoBehaviour
         }
     }
 
+    public void UpdateCounter()
+    {
+        counter.text = (Workers.Count + " / " + softCap);
+    }
+
     void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
@@ -127,4 +142,7 @@ public class Interactable : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, removalRadius);
     }
+
+    protected abstract void OnSoftCapReached();
+    protected abstract void OnSoftCapNotReached();
 }

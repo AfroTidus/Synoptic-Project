@@ -15,6 +15,7 @@ public class Follower : MonoBehaviour
     private Rigidbody rb;
     private bool isIdle = false;
     private bool isBusy = false;
+    private bool isThrown = false;
 
     private void Awake()
     {
@@ -46,13 +47,14 @@ public class Follower : MonoBehaviour
 
     public void Throw()
     {
-        Debug.Log(name + " is being thrown!");
+        if (player == null || rb == null || isThrown) return;
 
-        if (player == null || rb == null) return;
+        Debug.Log(name + " is being thrown!");
 
         //agent.isStopped = true;
         agent.enabled = false;
         rb.isKinematic = false;
+        isThrown = true;
 
         // Reset Rigidbody velocity and angular velocity
         rb.velocity = Vector3.zero;
@@ -77,9 +79,10 @@ public class Follower : MonoBehaviour
 
         // Re-enable the NavMeshAgent and disable physics
         rb.isKinematic = true;
-        rb.velocity = Vector3.zero; // Reset velocity
-        rb.angularVelocity = Vector3.zero; // Reset angular velocity
+        //rb.velocity = Vector3.zero; // Reset velocity
+        //rb.angularVelocity = Vector3.zero; // Reset angular velocity
         agent.enabled = true;
+        isThrown = false;
 
         SetIdle(true);
     }
