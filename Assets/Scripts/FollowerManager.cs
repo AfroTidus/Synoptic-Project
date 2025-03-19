@@ -121,7 +121,7 @@ public class FollowerManager : MonoBehaviour
             if (followerScript != null)
             {
                 followerScript.SetBusy(false); // Reset the busy state
-                SetFollowerState(follower, FollowerState.Following); // Move back to original list
+                //SetFollowerState(follower, FollowerState.Following); // Move back to original list
 
                 // Notify Interactable that follower has been recalled
                 EventManager.TriggerEvent(EventNames.FollowerRecalled, follower);

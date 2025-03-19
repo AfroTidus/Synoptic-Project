@@ -35,7 +35,7 @@ public class Follower : MonoBehaviour
         }
 
         // If the follower is idle or thrown, do not follow the player
-        if (isIdle || isBusy) return;
+        if (isIdle || isBusy || isThrown) return;
 
         agent.SetDestination(player.position);
 
@@ -51,7 +51,6 @@ public class Follower : MonoBehaviour
 
         Debug.Log(name + " is being thrown!");
 
-        //agent.isStopped = true;
         agent.enabled = false;
         rb.isKinematic = false;
         isThrown = true;
@@ -79,8 +78,6 @@ public class Follower : MonoBehaviour
 
         // Re-enable the NavMeshAgent and disable physics
         rb.isKinematic = true;
-        //rb.velocity = Vector3.zero; // Reset velocity
-        //rb.angularVelocity = Vector3.zero; // Reset angular velocity
         agent.enabled = true;
         isThrown = false;
 

@@ -53,12 +53,12 @@ public abstract class Interactable : MonoBehaviour
         // Check if the soft cap is reached
         if (Workers.Count >= softCap)
         {
-            Debug.Log("Soft cap reached!");
+            //Debug.Log("Soft cap reached!");
             OnSoftCapReached();
         }
         else if (Workers.Count < softCap)
         {
-            Debug.Log("Soft cap no longer reached.");
+            //Debug.Log("Soft cap no longer reached.");
             OnSoftCapNotReached();
         }
     }
