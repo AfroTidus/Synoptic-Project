@@ -16,6 +16,7 @@ public class Follower : MonoBehaviour
     private bool isIdle = false;
     private bool isBusy = false;
     private bool isThrown = false;
+    private bool isDead = false;
 
     private void Awake()
     {
@@ -24,6 +25,16 @@ public class Follower : MonoBehaviour
         player = GameObject.Find("Player").transform;
 
         rb.isKinematic = true;
+    }
+
+    private void OnEnable()
+    {
+        EventManager.StartListening(EventNames.FollowerDeath, OnDeathEvent);
+    }
+
+    private void OnDisable()
+    {
+        EventManager.StopListening(EventNames.FollowerDeath, OnDeathEvent);
     }
 
     void Update()
@@ -71,6 +82,19 @@ public class Follower : MonoBehaviour
         Debug.Log(name + " has been thrown!");
     }
 
+    private void OnDeathEvent(object followerObj)
+    {
+        GameObject follower = (GameObject)followerObj;
+        if (follower == this.gameObject) // Check if this is the follower that should die
+        {
+            if (isDead) return;
+
+            SetDead(true);
+
+            Destroy(gameObject, 0.5f);
+        }
+    }
+
     private IEnumerator SetIdleAfterThrow()
     {
         // Wait for the throw duration
@@ -106,6 +130,18 @@ public class Follower : MonoBehaviour
     public bool IsBusy()
     {
         return isBusy;
+    }
+
+    public bool IsDead()
+    {
+        return isDead;
+    }
+
+    public void SetDead(bool dead)
+    {
+        isDead = dead;
+        if (dead) { isBusy = false; isIdle = false; }
+        NotifyStateChange();
     }
 
     private void NotifyStateChange()

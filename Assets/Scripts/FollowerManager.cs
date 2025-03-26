@@ -31,14 +31,12 @@ public class FollowerManager : MonoBehaviour
     {
         // Subscribe to events
         EventManager.StartListening("FollowerStateChanged", OnFollowerStateChanged);
-        //EventManager.StartListening("FollowerThrown", OnFollowerThrown);
     }
 
     private void OnDisable()
     {
         // Unsubscribe from events
         EventManager.StopListening("FollowerStateChanged", OnFollowerStateChanged);
-        //EventManager.StopListening("FollowerThrown", OnFollowerThrown);
     }
 
     void Update()
@@ -143,26 +141,32 @@ public class FollowerManager : MonoBehaviour
         {
             case FollowerState.Following:
                 followers.Add(follower);
-                Debug.Log(follower.name + " moved to followers list.");
                 break;
             case FollowerState.Idle:
                 idleFollowers.Add(follower);
-                Debug.Log(follower.name + " moved to idleFollowers list.");
                 break;
             case FollowerState.Busy:
                 busyFollowers.Add(follower);
-                Debug.Log(follower.name + " moved to busyFollowers list.");
+                break;
+            case FollowerState.Dead:
                 break;
         }
+
+        Debug.Log($"{follower.name} state changed to {state}");
     }
 
     private void OnFollowerStateChanged(object followerObj)
     {
         GameObject follower = (GameObject)followerObj;
+        if (follower == null) return;
         Follower followerScript = follower.GetComponent<Follower>();
 
         if (followerScript != null)
         {
+            if (followerScript.IsDead())
+            {
+                SetFollowerState(follower, FollowerState.Dead);
+            }
             if (followerScript.IsIdle())
             {
                 SetFollowerState(follower, FollowerState.Idle);
@@ -177,22 +181,12 @@ public class FollowerManager : MonoBehaviour
             }
         }
     }
-
-    //private void OnFollowerThrown(object followerObj)
-    //{
-    //    GameObject follower = (GameObject)followerObj;
-    //    Follower followerScript = follower.GetComponent<Follower>();
-
-    //    if (followerScript != null)
-    //    {
-    //        SetFollowerState(follower, FollowerState.Idle);
-    //    }
-    //}
 }
 
 public enum FollowerState
 {
     Following, // Actively following the player
     Idle,      // Idle and not following the player
-    Busy       // Busy with a task
+    Busy,      // Busy with a task
+    Dead       // Dead/destroyed
 }

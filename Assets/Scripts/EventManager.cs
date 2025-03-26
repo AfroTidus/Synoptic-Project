@@ -92,6 +92,6 @@ public static class EventNames
     public const string PlayerPressedSpawnKey = "PlayerPressedSpawnKey";
 
     public const string FollowerStateChanged = "FollowerStateChanged";
-    //public const string FollowerThrown = "FollowerThrown";
+    public const string FollowerDeath = "FollowerDeath";
     public const string FollowerRecalled = "FollowerRecalled";
 }
