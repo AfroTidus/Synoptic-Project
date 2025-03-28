@@ -5,7 +5,7 @@ using UnityEngine;
 public class CarryInteractable : Interactable
 {
     private bool isBeingCarried = false;
-    private Transform carrier; // Reference to the first worker's transform
+    private List<Transform> carriers = new List<Transform>();
     public float carryOffset = 2f; // Vertical offset when being carried
 
     // Start is called before the first frame update
@@ -13,11 +13,20 @@ public class CarryInteractable : Interactable
     {
         if (Workers.Count > 0 && !isBeingCarried)
         {
-            // Start carrying with the first worker
             isBeingCarried = true;
-            carrier = Workers[0].transform;
+            carriers.Clear();
 
-            // Optional: Make the object kinematic so physics don't interfere
+            // Set the carrier follower to carrying state
+            foreach (GameObject worker in Workers)
+            {
+                Follower follower = worker.GetComponent<Follower>();
+                if (follower != null)
+                {
+                    follower.SetCarrying(true);
+                    carriers.Add(worker.transform);
+                }
+            }
+
             Rigidbody rb = GetComponent<Rigidbody>();
             if (rb != null)
             {
@@ -30,11 +39,19 @@ public class CarryInteractable : Interactable
     {
         if (isBeingCarried)
         {
-            // Stop carrying
-            isBeingCarried = false;
-            carrier = null;
+            // Reset the carrier follower's state
+            foreach (GameObject worker in Workers)
+            {
+                Follower follower = worker.GetComponent<Follower>();
+                if (follower != null)
+                {
+                    follower.SetCarrying(false);
+                }
+            }
 
-            // Optional: Restore physics
+            isBeingCarried = false;
+            carriers.Clear();
+
             Rigidbody rb = GetComponent<Rigidbody>();
             if (rb != null)
             {
@@ -46,10 +63,22 @@ public class CarryInteractable : Interactable
     protected override void Update()
     {
         base.Update();
-        if (isBeingCarried && carrier != null)
+
+        if (isBeingCarried && carriers.Count > 0)
         {
-            // Follow the carrier with an offset
-            transform.position = carrier.position + Vector3.up * carryOffset;
+            // Calculate average position of all carriers
+            Vector3 averagePosition = Vector3.zero;
+            foreach (Transform carrier in carriers)
+            {
+                if (carrier != null)
+                {
+                    averagePosition += carrier.position;
+                }
+            }
+            averagePosition /= carriers.Count;
+
+            // Move object to average position with offset
+            transform.position = averagePosition + Vector3.up * carryOffset;
         }
     }
 }

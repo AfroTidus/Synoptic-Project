@@ -15,6 +15,7 @@ public class Follower : MonoBehaviour
     private Rigidbody rb;
     private bool isIdle = false;
     private bool isBusy = false;
+    private bool isCarrying = false;
     private bool isThrown = false;
     private bool isDead = false;
 
@@ -58,7 +59,7 @@ public class Follower : MonoBehaviour
 
     public void Throw()
     {
-        if (player == null || rb == null || isThrown) return;
+        if (player == null || rb == null || isThrown || isCarrying) return;
 
         Debug.Log(name + " is being thrown!");
 
@@ -132,9 +133,20 @@ public class Follower : MonoBehaviour
         return isBusy;
     }
 
-    public bool IsDead()
+    public void SetCarrying(bool carrying)
     {
-        return isDead;
+        isCarrying = carrying;
+        if (carrying)
+        {
+            isBusy = false;
+            isIdle = false;
+        }
+        NotifyStateChange();
+    }
+
+    public bool IsCarrying()
+    {
+        return isCarrying;
     }
 
     public void SetDead(bool dead)
@@ -142,6 +154,11 @@ public class Follower : MonoBehaviour
         isDead = dead;
         if (dead) { isBusy = false; isIdle = false; }
         NotifyStateChange();
+    }
+
+    public bool IsDead()
+    {
+        return isDead;
     }
 
     private void NotifyStateChange()

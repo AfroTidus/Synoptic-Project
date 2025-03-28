@@ -13,6 +13,7 @@ public class FollowerManager : MonoBehaviour
     public List<GameObject> followers = new List<GameObject>(); // Followers within proximity
     public List<GameObject> idleFollowers = new List<GameObject>(); // Idle followers
     public List<GameObject> busyFollowers = new List<GameObject>(); // Busy followers
+    public List<GameObject> carryingFollowers = new List<GameObject>();
 
     void Awake()
     {
@@ -57,6 +58,11 @@ public class FollowerManager : MonoBehaviour
         {
             RecallBusyFollowers();
         }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            RecallCarryingFollowers();
+        }
     }
 
     void DetectAndManageFollowers()
@@ -87,7 +93,7 @@ public class FollowerManager : MonoBehaviour
         {
             GameObject follower = followers[0];
             Follower followerScript = follower.GetComponent<Follower>();
-            if (followerScript != null)
+            if (followerScript != null && !followerScript.IsCarrying())
             {
                 followerScript.Throw();
             }
@@ -119,12 +125,27 @@ public class FollowerManager : MonoBehaviour
             if (followerScript != null)
             {
                 followerScript.SetBusy(false); // Reset the busy state
-                //SetFollowerState(follower, FollowerState.Following); // Move back to original list
 
                 // Notify Interactable that follower has been recalled
                 EventManager.TriggerEvent(EventNames.FollowerRecalled, follower);
 
                 Debug.Log(follower.name + " recalled from busy and moved to followers list.");
+            }
+        }
+    }
+
+    void RecallCarryingFollowers()
+    {
+        List<GameObject> carryingFollowersCopy = new List<GameObject>(carryingFollowers);
+
+        foreach (GameObject follower in carryingFollowersCopy)
+        {
+            Follower followerScript = follower.GetComponent<Follower>();
+            if (followerScript != null)
+            {
+                followerScript.SetCarrying(false);
+                // This will trigger the CarryInteractable to release the object
+                EventManager.TriggerEvent(EventNames.FollowerRecalled, follower);
             }
         }
     }
@@ -135,6 +156,8 @@ public class FollowerManager : MonoBehaviour
         followers.Remove(follower);
         idleFollowers.Remove(follower);
         busyFollowers.Remove(follower);
+        carryingFollowers.Remove(follower);
+
 
         // Add the follower to the appropriate list based on the state
         switch (state)
@@ -147,6 +170,9 @@ public class FollowerManager : MonoBehaviour
                 break;
             case FollowerState.Busy:
                 busyFollowers.Add(follower);
+                break;
+            case FollowerState.Carrying:
+                carryingFollowers.Add(follower);
                 break;
             case FollowerState.Dead:
                 break;
@@ -167,7 +193,11 @@ public class FollowerManager : MonoBehaviour
             {
                 SetFollowerState(follower, FollowerState.Dead);
             }
-            if (followerScript.IsIdle())
+            else if (followerScript.IsCarrying())
+            {
+                SetFollowerState(follower, FollowerState.Carrying);
+            }
+            else if (followerScript.IsIdle())
             {
                 SetFollowerState(follower, FollowerState.Idle);
             }
@@ -188,5 +218,6 @@ public enum FollowerState
     Following, // Actively following the player
     Idle,      // Idle and not following the player
     Busy,      // Busy with a task
+    Carrying,
     Dead       // Dead/destroyed
 }

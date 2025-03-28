@@ -743,7 +743,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad60d7165d2936d4daf54c8c9a12cd79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  softCap: 1
+  softCap: 3
   hardCap: 5
   detectionRadius: 5
   removalRadius: 7

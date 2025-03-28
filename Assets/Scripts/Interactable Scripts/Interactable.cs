@@ -68,37 +68,52 @@ public abstract class Interactable : MonoBehaviour
         // Detect followers within the radius
         Collider[] detectedFollowers = Physics.OverlapSphere(transform.position, detectionRadius, followerLayer);
 
+        foreach (GameObject worker in new List<GameObject>(Workers))
+        {
+            if (worker == null) continue;
+
+            float distance = Vector3.Distance(transform.position, worker.transform.position);
+            if (distance > removalRadius)
+            {
+                Follower followerScript = worker.GetComponent<Follower>();
+                if (followerScript != null)
+                {
+                    followerScript.SetBusy(false);
+                    followerScript.SetCarrying(false);
+                }
+                Workers.Remove(worker);
+            }
+        }
+
         foreach (Collider col in detectedFollowers)
         {
             GameObject follower = col.gameObject;
             Follower followerScript = follower.GetComponent<Follower>();
 
-            // Check if the follower is idle and not already assigned to this interactable
-            if (followerScript != null && followerScript.IsIdle() && !Workers.Contains(follower) && Workers.Count < hardCap)
+            if (followerScript != null && followerScript.IsIdle() &&
+                !Workers.Contains(follower) && Workers.Count < hardCap)
             {
-                // Set the follower to busy and assign it to this interactable
                 followerScript.SetBusy(true);
                 Workers.Add(follower);
-                Debug.Log(follower.name + " has been assigned to " + gameObject.name);
             }
         }
 
         // Remove followers that are outside the radius
-        Workers.RemoveAll(follower => {
-            if (follower == null) return true; // Remove if destroyed
+        //Workers.RemoveAll(follower => {
+        //    if (follower == null) return true; // Remove if destroyed
 
-            float distance = Vector3.Distance(transform.position, follower.transform.position);
-            if (distance > removalRadius)
-            {
-                Follower followerScript = follower.GetComponent<Follower>();
-                if (followerScript != null)
-                {
-                    followerScript.SetBusy(false); // Reset the busy state
-                }
-                return true; // Remove from Workers list
-            }
-            return false; // Keep in Workers list
-        });
+        //    float distance = Vector3.Distance(transform.position, follower.transform.position);
+        //    if (distance > removalRadius)
+        //    {
+        //        Follower followerScript = follower.GetComponent<Follower>();
+        //        if (followerScript != null)
+        //        {
+        //            followerScript.SetBusy(false); // Reset the busy state
+        //        }
+        //        return true; // Remove from Workers list
+        //    }
+        //    return false; // Keep in Workers list
+        //});
 
         UpdateCounter();
     }
@@ -109,6 +124,13 @@ public abstract class Interactable : MonoBehaviour
         if (Workers.Contains(follower))
         {
             Workers.Remove(follower);
+
+            Follower followerScript = follower.GetComponent<Follower>();
+            if (followerScript != null && followerScript.IsCarrying())
+            {
+                OnSoftCapNotReached();
+            }
+
             Debug.Log(follower.name + " removed from Workers list due to recall.");
         }
     }
