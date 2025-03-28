@@ -743,7 +743,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad60d7165d2936d4daf54c8c9a12cd79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  softCap: 3
+  softCap: 1
   hardCap: 5
   detectionRadius: 5
   removalRadius: 7
@@ -753,6 +753,7 @@ MonoBehaviour:
   prompt: {fileID: 7331779215575845465}
   counter: {fileID: 768152565}
   Workers: []
+  carryOffset: 1.5
 --- !u!1 &294266500
 GameObject:
   m_ObjectHideFlags: 3

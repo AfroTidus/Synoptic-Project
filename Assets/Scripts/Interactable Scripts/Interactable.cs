@@ -42,7 +42,7 @@ public abstract class Interactable : MonoBehaviour
         }
     }
 
-    void Update()
+    protected virtual void Update()
     {
         DetectAndAssignWorkers();
         CheckSoftCap();
