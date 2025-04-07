@@ -16,6 +16,7 @@ public class Follower : MonoBehaviour
     private bool isIdle = false;
     private bool isBusy = false;
     private bool isCarrying = false;
+    private bool isDelivering = false;
     private bool isThrown = false;
     private bool isDead = false;
 
@@ -47,7 +48,7 @@ public class Follower : MonoBehaviour
         }
 
         // If the follower is idle or thrown, do not follow the player
-        if (isIdle || isBusy || isThrown) return;
+        if (isIdle || isBusy || isThrown || isDelivering) return;
 
         agent.SetDestination(player.position);
 
@@ -147,6 +148,11 @@ public class Follower : MonoBehaviour
     public bool IsCarrying()
     {
         return isCarrying;
+    }
+
+    public void SetDelivering(bool delivering)
+    {
+        isDelivering = delivering;
     }
 
     public void SetDead(bool dead)

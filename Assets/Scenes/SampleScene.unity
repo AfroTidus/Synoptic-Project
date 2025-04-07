@@ -754,6 +754,9 @@ MonoBehaviour:
   counter: {fileID: 768152565}
   Workers: []
   carryOffset: 1.5
+  destination: {fileID: 1280476936}
+  destinationTriggerRadius: 6
+  destinationReachRadius: 3
 --- !u!1 &294266500
 GameObject:
   m_ObjectHideFlags: 3
