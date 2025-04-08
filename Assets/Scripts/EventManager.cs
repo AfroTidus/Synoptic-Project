@@ -97,4 +97,8 @@ public static class EventNames
 
     public const string CarryInteractableApproachedDestination = "CarryInteractableApproachedDestination";
     public const string CarryInteractableReachedDestination = "CarryInteractableReachedDestination";
+
+    public const string FollowerCountChanged = "FollowerCountChanged";
+    public const string MaxFollowersReached = "MaxFollowersReached";
+    public const string BelowMaxFollowers = "BelowMaxFollowers";
 }

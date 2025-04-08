@@ -8,6 +8,7 @@ public class Spawner : MonoBehaviour
     public GameObject prompt;
 
     private bool isPlayerInRadius = false;
+    public bool canSpawn;
 
     private void OnEnable()
     {
@@ -15,6 +16,9 @@ public class Spawner : MonoBehaviour
         EventManager.StartListening(EventNames.PlayerEnteredSpawnRadius, OnPlayerEnteredSpawnRadius);
         EventManager.StartListening(EventNames.PlayerExitedSpawnRadius, OnPlayerExitedSpawnRadius);
         EventManager.StartListening(EventNames.PlayerPressedSpawnKey, OnPlayerPressedSpawnKey);
+
+        EventManager.StartListening(EventNames.MaxFollowersReached, OnMaxFollowersReached);
+        EventManager.StartListening(EventNames.BelowMaxFollowers, OnBelowMaxFollowers);
     }
 
     private void OnDisable()
@@ -23,6 +27,9 @@ public class Spawner : MonoBehaviour
         EventManager.StopListening(EventNames.PlayerEnteredSpawnRadius, OnPlayerEnteredSpawnRadius);
         EventManager.StopListening(EventNames.PlayerExitedSpawnRadius, OnPlayerExitedSpawnRadius);
         EventManager.StopListening(EventNames.PlayerPressedSpawnKey, OnPlayerPressedSpawnKey);
+
+        EventManager.StopListening(EventNames.MaxFollowersReached, OnMaxFollowersReached);
+        EventManager.StopListening(EventNames.BelowMaxFollowers, OnBelowMaxFollowers);
     }
 
     private void Awake()
@@ -55,10 +62,20 @@ public class Spawner : MonoBehaviour
         }
     }
 
+    private void OnMaxFollowersReached(object data)
+    {
+        canSpawn = false;
+    }
+
+    private void OnBelowMaxFollowers(object data)
+    {
+        canSpawn = true;
+    }
+
     private void OnPlayerPressedSpawnKey(object data)
     {
         // Check if the player is within the radius and pressed the spawn key
-        if (isPlayerInRadius)
+        if (isPlayerInRadius && canSpawn)
         {
             SpawnFollower();
         }

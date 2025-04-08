@@ -740,7 +740,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 188632089}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad60d7165d2936d4daf54c8c9a12cd79, type: 3}
+  m_Script: {fileID: 11500000, guid: 4f0711a585379c84e8404e515c8f4d5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   softCap: 3
@@ -756,7 +756,8 @@ MonoBehaviour:
   carryOffset: 1.5
   destination: {fileID: 1280476936}
   destinationTriggerRadius: 6
-  destinationReachRadius: 3
+  destinationReachRadius: 2.5
+  plusMaxFollowers: 5
 --- !u!1 &294266500
 GameObject:
   m_ObjectHideFlags: 3
@@ -2594,6 +2595,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   followerType: {fileID: 1589928742332214749, guid: 41b8a34fbc597394eb54845d9dd1bcc9, type: 3}
   prompt: {fileID: 49827607}
+  canSpawn: 1
 --- !u!1 &1311092642
 GameObject:
   m_ObjectHideFlags: 3
@@ -3815,6 +3817,10 @@ PrefabInstance:
       propertyPath: cam
       value: 
       objectReference: {fileID: 963194228}
+    - target: {fileID: 6658043790775848592, guid: 06fa3cccdb197e744b0a313cf0650ea9, type: 3}
+      propertyPath: maxFollowers
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 7597713131135082336, guid: 06fa3cccdb197e744b0a313cf0650ea9, type: 3}
       propertyPath: m_Layer
       value: 9

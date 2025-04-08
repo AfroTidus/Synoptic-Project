@@ -10,6 +10,9 @@ public class FollowerManager : MonoBehaviour
     public float removalRadius = 7f; // Radius to remove followers
     public LayerMask followerLayer; // Layer to detect followers
 
+    public int maxFollowers;
+    public int followerCount;
+
     public List<GameObject> followers = new List<GameObject>(); // Followers within proximity
     public List<GameObject> idleFollowers = new List<GameObject>(); // Idle followers
     public List<GameObject> busyFollowers = new List<GameObject>(); // Busy followers
@@ -43,6 +46,16 @@ public class FollowerManager : MonoBehaviour
     void Update()
     {
         DetectAndManageFollowers();
+        followerCount = followers.Count + idleFollowers.Count + busyFollowers.Count + carryingFollowers.Count; //calculation not entirely accurate, followers being thrown are not counted, change this later
+
+        if(followerCount >= maxFollowers)
+        {
+            EventManager.TriggerEvent("MaxFollowersReached", this.gameObject);
+        }
+        if(followerCount < maxFollowers)
+        {
+            EventManager.TriggerEvent("BelowMaxFollowers", this.gameObject);
+        }
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -210,6 +223,11 @@ public class FollowerManager : MonoBehaviour
                 SetFollowerState(follower, FollowerState.Following);
             }
         }
+    }
+
+    public void MaxFollowerIncrease(int amount)
+    {
+        maxFollowers += amount;
     }
 }
 

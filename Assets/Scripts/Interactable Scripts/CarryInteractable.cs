@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class CarryInteractable : Interactable
+public abstract class CarryInteractable : Interactable
 {
     private bool isBeingCarried = false;
     private List<Transform> carriers = new List<Transform>();
@@ -87,12 +87,15 @@ public class CarryInteractable : Interactable
                 else if (movingToDestination && distanceToDest <= destinationReachRadius)
                 {
                     //Logic before destruction
+                    OnDestinationReached();
                     ReleaseWorkers();
                     Destroy(gameObject);
                 }
             }
         }
     }
+
+    protected abstract void OnDestinationReached();
 
     private void UpdateCarryPosition()
     {
