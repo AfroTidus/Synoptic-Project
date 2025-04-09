@@ -59,7 +59,7 @@ public class PlayerController : MonoBehaviour
         {
             if (nearSpawner)
             {
-                EventManager.TriggerEvent("PlayerPressedSpawnKey");
+                EventManager.TriggerEvent(EventNames.PlayerPressedSpawnKey);
             }
             else
             {
@@ -144,7 +144,7 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("Spawner"))
         {
             // Trigger the event when the player enters the spawn radius
-            EventManager.TriggerEvent("PlayerEnteredSpawnRadius", other.gameObject);
+            EventManager.TriggerEvent(EventNames.PlayerEnteredSpawnRadius, other.gameObject);
             nearSpawner = true;
         }
     }
@@ -154,7 +154,7 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("Spawner"))
         {
             // Trigger the event when the player exits the spawn radius
-            EventManager.TriggerEvent("PlayerExitedSpawnRadius", other.gameObject);
+            EventManager.TriggerEvent(EventNames.PlayerExitedSpawnRadius, other.gameObject);
             nearSpawner = false;
         }
     }

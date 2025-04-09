@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class FollowerManager : MonoBehaviour
@@ -12,6 +13,7 @@ public class FollowerManager : MonoBehaviour
 
     public int maxFollowers;
     public int followerCount;
+    public TextMeshProUGUI followerDisplay;
 
     public List<GameObject> followers = new List<GameObject>(); // Followers within proximity
     public List<GameObject> idleFollowers = new List<GameObject>(); // Idle followers
@@ -34,27 +36,32 @@ public class FollowerManager : MonoBehaviour
     private void OnEnable()
     {
         // Subscribe to events
-        EventManager.StartListening("FollowerStateChanged", OnFollowerStateChanged);
+        EventManager.StartListening(EventNames.FollowerStateChanged, OnFollowerStateChanged);
+        EventManager.StartListening(EventNames.FollowerSpawned, OnFollowerSpawned);
+        EventManager.StartListening(EventNames.FollowerDeath, OnFollowerDeath);
     }
 
     private void OnDisable()
     {
         // Unsubscribe from events
-        EventManager.StopListening("FollowerStateChanged", OnFollowerStateChanged);
+        EventManager.StopListening(EventNames.FollowerStateChanged, OnFollowerStateChanged);
+        EventManager.StopListening(EventNames.FollowerSpawned, OnFollowerSpawned);
+        EventManager.StopListening(EventNames.FollowerDeath, OnFollowerDeath);
     }
 
     void Update()
     {
         DetectAndManageFollowers();
-        followerCount = followers.Count + idleFollowers.Count + busyFollowers.Count + carryingFollowers.Count; //calculation not entirely accurate, followers being thrown are not counted, change this later
+        //followerCount = followers.Count + idleFollowers.Count + busyFollowers.Count + carryingFollowers.Count; //calculation not entirely accurate, followers being thrown are not counted, change this later
+        followerDisplay.text = "Followers: " +followerCount+ "/" + maxFollowers;
 
         if(followerCount >= maxFollowers)
         {
-            EventManager.TriggerEvent("MaxFollowersReached", this.gameObject);
+            EventManager.TriggerEvent(EventNames.MaxFollowersReached, this.gameObject);
         }
         if(followerCount < maxFollowers)
         {
-            EventManager.TriggerEvent("BelowMaxFollowers", this.gameObject);
+            EventManager.TriggerEvent(EventNames.BelowMaxFollowers, this.gameObject);
         }
 
         if (Input.GetKeyDown(KeyCode.Q))
@@ -223,6 +230,16 @@ public class FollowerManager : MonoBehaviour
                 SetFollowerState(follower, FollowerState.Following);
             }
         }
+    }
+
+    private void OnFollowerSpawned(object T)
+    {
+        followerCount++;
+    }
+
+    private void OnFollowerDeath(object T)
+    {
+        followerCount--;
     }
 
     public void MaxFollowerIncrease(int amount)

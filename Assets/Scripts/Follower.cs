@@ -32,6 +32,7 @@ public class Follower : MonoBehaviour
     private void OnEnable()
     {
         EventManager.StartListening(EventNames.FollowerDeath, OnDeathEvent);
+        EventManager.TriggerEvent(EventNames.FollowerSpawned, this.gameObject);
     }
 
     private void OnDisable()
@@ -169,7 +170,7 @@ public class Follower : MonoBehaviour
 
     private void NotifyStateChange()
     {
-        EventManager.TriggerEvent("FollowerStateChanged", this.gameObject);
+        EventManager.TriggerEvent(EventNames.FollowerStateChanged, this.gameObject);
     }
 }
 
