@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 5854634779785750249}
   - component: {fileID: 3511158280467016661}
   - component: {fileID: 5062807941978452848}
-  - component: {fileID: 3666983622511906151}
+  - component: {fileID: 2266486089389192600}
   - component: {fileID: 8950591579500413022}
   m_Layer: 6
   m_Name: Follower
@@ -118,7 +118,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &3666983622511906151
+--- !u!114 &2266486089389192600
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,7 +127,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1589928742332214749}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f75bb723d3d8b94286d19d072ca32ba, type: 3}
+  m_Script: {fileID: 11500000, guid: 02ad0b5cadc462e4f81aaf3dd988841a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5

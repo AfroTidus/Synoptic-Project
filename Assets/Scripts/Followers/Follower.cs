@@ -3,15 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Follower : MonoBehaviour
+public abstract class Follower : MonoBehaviour
 {
     private Transform player;
     private NavMeshAgent agent;
+
+    [Header("Throw Settings")]
     public float speed = 5f; // Speed of the follower
     public float avoidanceDistance = 1.5f;
     public float throwForce = 15f; // Force applied when thrown
     public float throwOffset = 1.5f; // Offset in front of the player
     public float throwDuration = 1.5f; // Time before follower resumes following
+
+    //[Header("Follower Type")]
+    //private bool basic;
+    //private bool fire;
+    //private bool type2;
+    //private bool type3;
+
     private Rigidbody rb;
     private bool isIdle = false;
     private bool isBusy = false;
@@ -172,6 +181,31 @@ public class Follower : MonoBehaviour
     {
         EventManager.TriggerEvent(EventNames.FollowerStateChanged, this.gameObject);
     }
+
+    //public void SetBasic(bool State)
+    //{
+    //    basic = State;
+    //    Debug.Log("Follower is Basic");
+    //}
+
+    //public void SetFire(bool State)
+    //{
+    //    fire = State;
+    //    Debug.Log("Follower is Fire");
+    //}
+
+    //public void SetType2(bool State)
+    //{
+    //    type2 = State;
+    //    Debug.Log("Follower is Type2");
+    //}
+
+    //public void SetType3(bool State)
+    //{
+    //    type3 = State;
+    //    Debug.Log("Follower is Type3");
+    //}
+
 }
 
 //// Calculate distance to the player
