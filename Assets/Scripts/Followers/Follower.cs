@@ -41,12 +41,14 @@ public abstract class Follower : MonoBehaviour
     private void OnEnable()
     {
         EventManager.StartListening(EventNames.FollowerDeath, OnDeathEvent);
+        EventManager.StartListening(EventNames.FollowerMoveToPosition, MoveToPosition);
         EventManager.TriggerEvent(EventNames.FollowerSpawned, this.gameObject);
     }
 
     private void OnDisable()
     {
         EventManager.StopListening(EventNames.FollowerDeath, OnDeathEvent);
+        EventManager.StopListening(EventNames.FollowerMoveToPosition, MoveToPosition);
     }
 
     void Update()
@@ -57,7 +59,7 @@ public abstract class Follower : MonoBehaviour
             return;
         }
 
-        // If the follower is idle or thrown, do not follow the player
+        // If the follower is unavailable player
         if (isIdle || isBusy || isThrown || isDelivering) return;
 
         agent.SetDestination(player.position);
@@ -86,12 +88,26 @@ public abstract class Follower : MonoBehaviour
         Vector3 throwPosition = player.position + player.forward * throwOffset;
         transform.position = throwPosition;
 
-        // Launch follower in player's forward direction
+        // Launch follower in player facing direction
         Vector3 launchDirection = (player.forward + Vector3.up * 0.2f).normalized;
         rb.AddForce(launchDirection * throwForce, ForceMode.Impulse);
 
         StartCoroutine(SetIdleAfterThrow());
         Debug.Log(name + " has been thrown!");
+    }
+
+    private void MoveToPosition(object positionObj)
+    {
+        if (isIdle || isBusy || isDead || isThrown || isCarrying || isDelivering) return;
+
+        Vector3 targetPosition = (Vector3)positionObj;
+
+        // Set the follower to busy state while moving to commanded position
+        SetBusy(true);
+
+        // Set the NavMeshAgent destination
+        agent.SetDestination(targetPosition);
+        SetIdle(true);
     }
 
     private void OnDeathEvent(object followerObj)

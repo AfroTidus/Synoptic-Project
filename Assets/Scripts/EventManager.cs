@@ -95,6 +95,7 @@ public static class EventNames
     public const string FollowerSpawned = "FollowerSpawned";
     public const string FollowerDeath = "FollowerDeath";
     public const string FollowerRecalled = "FollowerRecalled";
+    public const string FollowerMoveToPosition = "FollowerMoveToPosition";
 
     public const string CarryInteractableApproachedDestination = "CarryInteractableApproachedDestination";
     public const string CarryInteractableReachedDestination = "CarryInteractableReachedDestination";

@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
     {
         Movement();
         CheckInteractables();
+        CheckLockedInteractableDistance();
     }
 
     void Movement()
@@ -79,13 +80,45 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                CycleInteractables();
+                if (nearbyInteractables.Count > 1)
+                {
+                    CycleInteractables();
+                }
+                else
+                {
+                    UnlockInteractable();
+                }
             }
         }
 
         if (Input.GetKeyDown(KeyCode.U))
         {
             UnlockInteractable();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            if (lockedInteractable != null)
+            {
+                // Command followers to move to lock on position
+                EventManager.TriggerEvent(EventNames.FollowerMoveToPosition, lockedInteractable.transform.position);
+            }
+            else
+            {
+                Debug.Log("No interactable locked on to command followers");
+            }
+        }
+    }
+
+    private void CheckLockedInteractableDistance()
+    {
+        if (lockedInteractable != null)
+        {
+            float distance = Vector3.Distance(transform.position, lockedInteractable.transform.position);
+            if (distance > lockOnRange)
+            {
+                UnlockInteractable();
+            }
         }
     }
 
