@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class PoisonFollower : Follower
 {
-    //void Start()
-    //{
-    //    SetFire(true);
-    //}
+    void Start()
+    {
+        followerType = FollowerType.Poison;
+    }
 }

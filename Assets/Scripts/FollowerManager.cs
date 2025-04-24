@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -14,6 +15,9 @@ public class FollowerManager : MonoBehaviour
     public int maxFollowers;
     public int followerCount;
     public TextMeshProUGUI followerDisplay;
+    public TextMeshProUGUI currentTypeDisplay;
+
+    public FollowerType currentType = FollowerType.Any;
 
     public List<GameObject> followers = new List<GameObject>(); // Followers within proximity
     public List<GameObject> idleFollowers = new List<GameObject>(); // Idle followers
@@ -83,6 +87,41 @@ public class FollowerManager : MonoBehaviour
         {
             RecallCarryingFollowers();
         }
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            currentType = FollowerType.Any;
+            currentTypeDisplay.text = "Any";
+            currentTypeDisplay.color = Color.white;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        { 
+            currentType = FollowerType.Base;
+            currentTypeDisplay.text = "Base";
+            currentTypeDisplay.color = Color.black;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha3)) 
+        { 
+            currentType = FollowerType.Fire;
+            currentTypeDisplay.text = "Fire";
+            currentTypeDisplay.color = Color.red;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha4)) 
+        { 
+            currentType = FollowerType.Water;
+            currentTypeDisplay.text = "Water";
+            currentTypeDisplay.color = Color.blue;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha5)) 
+        { 
+            currentType = FollowerType.Poison;
+            currentTypeDisplay.text = "Poison";
+            currentTypeDisplay.color = Color.green;
+        }
     }
 
     void DetectAndManageFollowers()
@@ -109,10 +148,13 @@ public class FollowerManager : MonoBehaviour
 
     void ExecuteFollowerThrow()
     {
-        if (followers.Count > 0)
+        var eligibleFollowers = GetFollowersOfCurrentType(followers);
+
+        if (eligibleFollowers.Count > 0)
         {
-            GameObject follower = followers[0];
+            GameObject follower = eligibleFollowers[0];
             Follower followerScript = follower.GetComponent<Follower>();
+
             if (followerScript != null && !followerScript.IsCarrying())
             {
                 followerScript.Throw();
@@ -168,6 +210,24 @@ public class FollowerManager : MonoBehaviour
                 EventManager.TriggerEvent(EventNames.FollowerRecalled, follower);
             }
         }
+    }
+
+    private List<GameObject> GetFollowersOfCurrentType(List<GameObject> followerList)
+    {
+        if (currentType == FollowerType.Any)
+            return new List<GameObject>(followerList);
+
+        var filteredFollowers = new List<GameObject>();
+        foreach (var follower in followerList)
+        {
+            var followerScript = follower.GetComponent<Follower>();
+            if (followerScript != null && followerScript.GetFollowerType() == currentType)
+            {
+                filteredFollowers.Add(follower);
+            }
+        }
+
+        return filteredFollowers;
     }
 
     public void SetFollowerState(GameObject follower, FollowerState state)
@@ -255,4 +315,13 @@ public enum FollowerState
     Busy,      // Busy with a task
     Carrying,
     Dead       // Dead/destroyed
+}
+
+public enum FollowerType
+{
+    Any,
+    Base,
+    Fire,
+    Water,
+    Poison
 }

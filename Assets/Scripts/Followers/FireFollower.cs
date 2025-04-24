@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class FireFollower : Follower
 {
-    //void Start()
-    //{
-    //    SetFire(true);
-    //}
+    void Start()
+    {
+        followerType = FollowerType.Fire;
+    }
 }

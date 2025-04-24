@@ -28,7 +28,7 @@ public class EventManager : MonoBehaviour
 
     private void Awake()
     {
-        // Destroy duplicates and initialize dictionary
+        // Destroy duplicates and create new dictionary
         if (_instance != null && _instance != this)
         {
             Destroy(gameObject);

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class BaseFollower : Follower
 {
-    //void Start()
-    //{
-    //    SetBasic(true);
-    //}
+    void Start()
+    {
+        followerType = FollowerType.Base;
+    }
 }

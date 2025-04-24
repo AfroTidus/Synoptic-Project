@@ -15,11 +15,7 @@ public abstract class Follower : MonoBehaviour
     public float throwOffset = 1.5f; // Offset in front of the player
     public float throwDuration = 1.5f; // Time before follower resumes following
 
-    //[Header("Follower Type")]
-    //private bool basic;
-    //private bool fire;
-    //private bool type2;
-    //private bool type3;
+    public FollowerType followerType;
 
     private Rigidbody rb;
     private bool isIdle = false;
@@ -191,6 +187,11 @@ public abstract class Follower : MonoBehaviour
     public bool IsDead()
     {
         return isDead;
+    }
+
+    public FollowerType GetFollowerType()
+    {
+        return followerType;
     }
 
     private void NotifyStateChange()

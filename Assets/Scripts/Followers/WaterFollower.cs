@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class WaterFollower : Follower
 {
-    //void Start()
-    //{
-    //    SetFire(true);
-    //}
+    void Start()
+    {
+        followerType = FollowerType.Water;
+    }
 }
