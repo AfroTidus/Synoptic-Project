@@ -6,10 +6,13 @@ using UnityEngine.AI;
 public class PlayerController : MonoBehaviour
 {
     private CharacterController characterController;
+    private Rigidbody rb;
     public Transform cam;
     public float speed = 6f;
     public float turnSmoothTime = 0.1f;
     private float turnSmoothVelocity;
+
+    public Transform respawnPoint;
 
     public float lockOnRange = 5f;
     public List<Interactable> nearbyInteractables = new List<Interactable>();
@@ -21,6 +24,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         characterController = GetComponent<CharacterController>();
+        rb = GetComponent<Rigidbody>();
     }
     // Update is called once per frame
     void Update()
@@ -28,6 +32,11 @@ public class PlayerController : MonoBehaviour
         Movement();
         CheckInteractables();
         CheckLockedInteractableDistance();
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            this.transform.position = respawnPoint.transform.position;
+        }
     }
 
     void Movement()
@@ -179,6 +188,21 @@ public class PlayerController : MonoBehaviour
             // Trigger the event when the player enters the spawn radius
             EventManager.TriggerEvent(EventNames.PlayerEnteredSpawnRadius, other.gameObject);
             nearSpawner = true;
+        }
+
+        if (other.CompareTag("Death"))
+        {
+            if (respawnPoint != null)
+            {
+                // Respawn/Reload scene
+                characterController.enabled = false;
+                rb.velocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                this.transform.position = respawnPoint.transform.position;
+                Debug.Log("Died");
+                characterController.enabled = true;
+            }
+
         }
     }
 
