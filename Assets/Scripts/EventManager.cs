@@ -102,8 +102,6 @@ public static class EventNames
 
     public const string SpawnPointUpdate = "SpawnPointUpdate";
 
-    public const string NavMeshRebuildRequest = "NavMeshRebuildRequest";
-
     public const string FollowerCountChanged = "FollowerCountChanged";
     public const string MaxFollowersReached = "MaxFollowersReached";
     public const string BelowMaxFollowers = "BelowMaxFollowers";
