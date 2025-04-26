@@ -10,7 +10,8 @@ public abstract class CarryInteractable : Interactable
     public float carryOffset = 2f; // Vertical offset when being carried
 
     [Header("Destination Settings")]
-    public Transform destination;
+    //public Transform destination;
+    private Transform currentDestination = null;
     public float destinationTriggerRadius = 5f;
     public float destinationReachRadius = 1f;
     private bool movingToDestination = false;
@@ -75,14 +76,18 @@ public abstract class CarryInteractable : Interactable
         {
             UpdateCarryPosition();
 
-            if (destination != null)
+            if (currentDestination == null)
             {
-                float distanceToDest = Vector3.Distance(transform.position, destination.position);
+                FindNearestSpawner();
+            }
+            else
+            {
+                float distanceToDest = Vector3.Distance(transform.position, currentDestination.position);
 
                 if (!movingToDestination && distanceToDest <= destinationTriggerRadius)
                 {
                     movingToDestination = true;
-                    SetWorkerDestinations(destination.position);
+                    SetWorkerDestinations(currentDestination.position);
                 }
                 else if (movingToDestination && distanceToDest <= destinationReachRadius)
                 {
@@ -93,6 +98,27 @@ public abstract class CarryInteractable : Interactable
                 }
             }
         }
+    }
+
+    private void FindNearestSpawner()
+    {
+        GameObject[] spawners = GameObject.FindGameObjectsWithTag("Spawner");
+        if (spawners.Length == 0) return;
+
+        Transform nearestSpawner = null;
+        float minDistance = float.MaxValue;
+
+        foreach (GameObject spawner in spawners)
+        {
+            float distance = Vector3.Distance(transform.position, spawner.transform.position);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                nearestSpawner = spawner.transform;
+            }
+        }
+
+        currentDestination = nearestSpawner;
     }
 
     protected abstract void OnDestinationReached();

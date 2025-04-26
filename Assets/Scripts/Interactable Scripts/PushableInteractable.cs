@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using TMPro;
+using Unity.AI.Navigation;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -8,7 +11,9 @@ public class PushableInteractable : Interactable
 {
     public Transform destination;
     public float moveSpeed = 1f;
+    public bool willBeWalkable;
     private bool isMoving = false;
+    private bool reachedDestination = false;
     private Vector3 initialPosition;
     private float progress = 0f;
 
@@ -20,8 +25,9 @@ public class PushableInteractable : Interactable
     protected override void Update()
     {
         base.Update();
+        //hiddenCopy.transform.position = this.transform.position;
 
-        if (isMoving)
+        if (isMoving && !reachedDestination)
         {
             MoveTowardsDestination();
             SetWorkerDestinations(this.transform.position);
@@ -30,7 +36,10 @@ public class PushableInteractable : Interactable
 
     protected override void OnSoftCapReached()
     {
-        isMoving = true;
+        if (!reachedDestination)
+        {
+            isMoving = true;
+        }
     }
 
     protected override void OnSoftCapNotReached()
@@ -54,8 +63,25 @@ public class PushableInteractable : Interactable
 
         if (progress >= 1f)
         {
-            isMoving = false;
+            ReachedDestination();
         }
+    }
+
+    private void ReachedDestination()
+    {
+        isMoving = false;
+        reachedDestination = true;
+
+        // Release all workers
+        foreach (GameObject worker in Workers)
+        {
+            Follower follower = worker?.GetComponent<Follower>();
+            if (follower != null)
+            {
+                follower.SetBusy(false);
+            }
+        }
+        Workers.Clear();
     }
 
     private void SetWorkerDestinations(Vector3 targetPos)

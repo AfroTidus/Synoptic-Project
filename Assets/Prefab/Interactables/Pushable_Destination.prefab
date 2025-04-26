@@ -216,6 +216,7 @@ MonoBehaviour:
   Workers: []
   destination: {fileID: 4890007336614911236}
   moveSpeed: 0.1
+  willBeWalkable: 0
 --- !u!208 &7994880996164381679
 NavMeshObstacle:
   m_ObjectHideFlags: 0
