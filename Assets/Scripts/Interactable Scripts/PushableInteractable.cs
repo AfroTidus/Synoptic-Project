@@ -16,6 +16,17 @@ public class PushableInteractable : Interactable
     private bool reachedDestination = false;
     private Vector3 initialPosition;
     private float progress = 0f;
+    private NavMeshSurface navMeshSurface;
+    private NavMeshModifier navMeshModifier;
+
+    private void Awake()
+    {
+        navMeshSurface = FindAnyObjectByType<NavMeshSurface>();
+        if (this.gameObject.GetComponent<NavMeshModifier>() != null )
+        {
+            navMeshModifier = GetComponent<NavMeshModifier>();
+        }
+    }
 
     private void Start()
     {
@@ -24,8 +35,9 @@ public class PushableInteractable : Interactable
 
     protected override void Update()
     {
+        if (reachedDestination) return;
+
         base.Update();
-        //hiddenCopy.transform.position = this.transform.position;
 
         if (isMoving && !reachedDestination)
         {
@@ -71,6 +83,8 @@ public class PushableInteractable : Interactable
     {
         isMoving = false;
         reachedDestination = true;
+        counter.enabled = false;
+        gameObject.layer = LayerMask.NameToLayer("Ground");
 
         // Release all workers
         foreach (GameObject worker in Workers)
@@ -82,6 +96,15 @@ public class PushableInteractable : Interactable
             }
         }
         Workers.Clear();
+
+        if (navMeshModifier != null)
+        {
+            navMeshModifier.enabled = false;
+        }
+        if (willBeWalkable)
+        {
+            navMeshSurface.BuildNavMesh();
+        }
     }
 
     private void SetWorkerDestinations(Vector3 targetPos)

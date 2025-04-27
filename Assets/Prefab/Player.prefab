@@ -126,7 +126,11 @@ MonoBehaviour:
   cam: {fileID: 0}
   speed: 6
   turnSmoothTime: 0.1
+  respawnPoint: {fileID: 0}
   lockOnRange: 15
+  interactableLayer:
+    serializedVersion: 2
+    m_Bits: 128
   nearbyInteractables: []
 --- !u!114 &6658043790775848592
 MonoBehaviour:
@@ -145,9 +149,15 @@ MonoBehaviour:
   followerLayer:
     serializedVersion: 2
     m_Bits: 64
+  maxFollowers: 0
+  followerCount: 0
+  followerDisplay: {fileID: 0}
+  currentTypeDisplay: {fileID: 0}
+  currentType: 0
   followers: []
   idleFollowers: []
   busyFollowers: []
+  carryingFollowers: []
 --- !u!1 &6105319067965173040
 GameObject:
   m_ObjectHideFlags: 0

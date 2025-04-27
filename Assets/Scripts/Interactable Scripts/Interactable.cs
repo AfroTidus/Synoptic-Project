@@ -22,12 +22,14 @@ public abstract class Interactable : MonoBehaviour
     {
         // Subscribe to events
         EventManager.StartListening(EventNames.FollowerRecalled, OnFollowerRecalled);
+        EventManager.StartListening(EventNames.FollowerDeath, OnFollowerDeath);
     }
 
     private void OnDisable()
     {
         // Unsubscribe from events
         EventManager.StopListening(EventNames.FollowerRecalled, OnFollowerRecalled);
+        EventManager.StopListening(EventNames.FollowerDeath, OnFollowerDeath);
     }
 
     private void Start()
@@ -132,6 +134,23 @@ public abstract class Interactable : MonoBehaviour
             }
 
             Debug.Log(follower.name + " removed from Workers list due to recall.");
+        }
+    }
+
+    private void OnFollowerDeath(object followerObj)
+    {
+        GameObject follower = (GameObject)followerObj;
+        if (Workers.Contains(follower))
+        {
+            Workers.Remove(follower);
+
+            Follower followerScript = follower.GetComponent<Follower>();
+            if (followerScript != null && followerScript.IsCarrying())
+            {
+                OnSoftCapNotReached();
+            }
+
+            Debug.Log(follower.name + " removed from Workers list due to death.");
         }
     }
 

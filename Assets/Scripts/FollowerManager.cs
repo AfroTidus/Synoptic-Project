@@ -53,10 +53,16 @@ public class FollowerManager : MonoBehaviour
         EventManager.StopListening(EventNames.FollowerDeath, OnFollowerDeath);
     }
 
+    private void Start()
+    {
+        currentType = FollowerType.Any;
+        currentTypeDisplay.text = "Any";
+        currentTypeDisplay.color = Color.white;
+    }
+
     void Update()
     {
         DetectAndManageFollowers();
-        //followerCount = followers.Count + idleFollowers.Count + busyFollowers.Count + carryingFollowers.Count; //calculation not entirely accurate, followers being thrown are not counted, change this later
         followerDisplay.text = "Followers: " +followerCount+ "/" + maxFollowers;
 
         if(followerCount >= maxFollowers)
@@ -86,6 +92,11 @@ public class FollowerManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.C))
         {
             RecallCarryingFollowers();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            CommandFollowersToInteractable();
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -171,8 +182,8 @@ public class FollowerManager : MonoBehaviour
             Follower followerScript = follower.GetComponent<Follower>();
             if (followerScript != null)
             {
-                followerScript.SetIdle(false); // Reset the idle state
-                SetFollowerState(follower, FollowerState.Following); // Move back to the original list
+                followerScript.SetIdle(false);
+                SetFollowerState(follower, FollowerState.Following);
             }
         }
     }
@@ -209,6 +220,22 @@ public class FollowerManager : MonoBehaviour
                 // This will trigger the CarryInteractable to release the object
                 EventManager.TriggerEvent(EventNames.FollowerRecalled, follower);
             }
+        }
+    }
+
+    void CommandFollowersToInteractable()
+    {
+        PlayerController player = FindObjectOfType<PlayerController>();
+        if (player == null || player.lockedInteractable == null) return;
+
+        Vector3 targetPosition = player.lockedInteractable.transform.position;
+
+        var followersToCommand = GetFollowersOfCurrentType(followers);
+
+        foreach (GameObject followerObj in followersToCommand)
+        {
+            Follower follower = followerObj.GetComponent<Follower>();
+            follower.MoveToPosition(targetPosition);
         }
     }
 
@@ -299,7 +326,9 @@ public class FollowerManager : MonoBehaviour
 
     private void OnFollowerDeath(object T)
     {
+        Debug.Log("Death event received for: " + ((GameObject)T).name);
         followerCount--;
+        Debug.Log("New count: " + followerCount);
     }
 
     public void MaxFollowerIncrease(int amount)

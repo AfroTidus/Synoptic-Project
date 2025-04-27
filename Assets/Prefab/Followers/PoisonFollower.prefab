@@ -218,6 +218,7 @@ MonoBehaviour:
   throwForce: 15
   throwOffset: 1.5
   throwDuration: 1.5
+  followerType: 0
 --- !u!195 &1286011349002462352
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -301,7 +302,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: faebad2fab2e77640bfafd63d14e7612, type: 2}
+  - {fileID: 2100000, guid: c004afc969728ca43b97b2926c4e392f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

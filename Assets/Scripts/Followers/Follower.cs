@@ -92,7 +92,7 @@ public abstract class Follower : MonoBehaviour
         Debug.Log(name + " has been thrown!");
     }
 
-    private void MoveToPosition(object positionObj)
+    public void MoveToPosition(object positionObj)
     {
         if (isIdle || isBusy || isDead || isThrown || isCarrying || isDelivering) return;
 
@@ -109,12 +109,9 @@ public abstract class Follower : MonoBehaviour
     private void OnDeathEvent(object followerObj)
     {
         GameObject follower = (GameObject)followerObj;
-        if (follower == this.gameObject) // Check if this is the follower that should die
+        if (follower == this.gameObject && !isDead) // Check if this is the follower that should die
         {
-            if (isDead) return;
-
             SetDead(true);
-
             Destroy(gameObject, 0.5f);
         }
     }
@@ -198,31 +195,6 @@ public abstract class Follower : MonoBehaviour
     {
         EventManager.TriggerEvent(EventNames.FollowerStateChanged, this.gameObject);
     }
-
-    //public void SetBasic(bool State)
-    //{
-    //    basic = State;
-    //    Debug.Log("Follower is Basic");
-    //}
-
-    //public void SetFire(bool State)
-    //{
-    //    fire = State;
-    //    Debug.Log("Follower is Fire");
-    //}
-
-    //public void SetType2(bool State)
-    //{
-    //    type2 = State;
-    //    Debug.Log("Follower is Type2");
-    //}
-
-    //public void SetType3(bool State)
-    //{
-    //    type3 = State;
-    //    Debug.Log("Follower is Type3");
-    //}
-
 }
 
 //// Calculate distance to the player

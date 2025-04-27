@@ -16,6 +16,9 @@ public abstract class CarryInteractable : Interactable
     public float destinationReachRadius = 1f;
     private bool movingToDestination = false;
 
+    private float destinationCheckCooldown = 0.5f;
+    private float lastDestinationCheckTime = 0f;
+
     // Start is called before the first frame update
     protected override void OnSoftCapReached()
     {
@@ -76,10 +79,12 @@ public abstract class CarryInteractable : Interactable
         {
             UpdateCarryPosition();
 
-            if (currentDestination == null)
+            if (Time.time - lastDestinationCheckTime > destinationCheckCooldown)
             {
                 FindNearestSpawner();
+                lastDestinationCheckTime = Time.time;
             }
+
             else
             {
                 float distanceToDest = Vector3.Distance(transform.position, currentDestination.position);
@@ -118,7 +123,14 @@ public abstract class CarryInteractable : Interactable
             }
         }
 
-        currentDestination = nearestSpawner;
+        if (nearestSpawner != currentDestination)
+        {
+            currentDestination = nearestSpawner;
+            if (movingToDestination && currentDestination != null)
+            {
+                SetWorkerDestinations(currentDestination.position);
+            }
+        }
     }
 
     protected abstract void OnDestinationReached();

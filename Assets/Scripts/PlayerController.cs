@@ -15,9 +15,10 @@ public class PlayerController : MonoBehaviour
     public Transform respawnPoint;
 
     public float lockOnRange = 5f;
+    public LayerMask interactableLayer;
     public List<Interactable> nearbyInteractables = new List<Interactable>();
     private int currentInteractableIndex = -1;
-    private Interactable lockedInteractable = null;
+    public Interactable lockedInteractable = null;
 
     private bool nearSpawner =  false;
 
@@ -35,7 +36,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.T))
         {
-            this.transform.position = respawnPoint.transform.position;
+            Respawn();
         }
     }
 
@@ -104,19 +105,6 @@ public class PlayerController : MonoBehaviour
         {
             UnlockInteractable();
         }
-
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            if (lockedInteractable != null)
-            {
-                // Command followers to move to lock on position
-                EventManager.TriggerEvent(EventNames.FollowerMoveToPosition, lockedInteractable.transform.position);
-            }
-            else
-            {
-                Debug.Log("No interactable locked on to command followers");
-            }
-        }
     }
 
     private void CheckLockedInteractableDistance()
@@ -134,13 +122,17 @@ public class PlayerController : MonoBehaviour
     void DetectNearbyInteractables()
     {
         nearbyInteractables.Clear();
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, lockOnRange);
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, lockOnRange, interactableLayer);
+
         foreach (var hitCollider in hitColliders)
         {
-            Interactable interactable = hitCollider.GetComponent<Interactable>();
-            if (interactable != null)
+            if (((1 << hitCollider.gameObject.layer) & interactableLayer) != 0)
             {
-                nearbyInteractables.Add(interactable);
+                Interactable interactable = hitCollider.GetComponent<Interactable>();
+                if (interactable != null)
+                {
+                    nearbyInteractables.Add(interactable);
+                }
             }
         }
     }
@@ -180,6 +172,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void Respawn()
+    {
+        characterController.enabled = false;
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        this.transform.position = respawnPoint.transform.position;
+        Debug.Log("Respawned");
+        characterController.enabled = true;
+    }
+
     // Collision logic
     private void OnTriggerEnter(Collider other)
     {
@@ -194,13 +196,7 @@ public class PlayerController : MonoBehaviour
         {
             if (respawnPoint != null)
             {
-                // Respawn/Reload scene
-                characterController.enabled = false;
-                rb.velocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-                this.transform.position = respawnPoint.transform.position;
-                Debug.Log("Died");
-                characterController.enabled = true;
+                Respawn();
             }
 
         }
