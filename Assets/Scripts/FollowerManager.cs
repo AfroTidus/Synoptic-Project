@@ -175,7 +175,8 @@ public class FollowerManager : MonoBehaviour
 
     void RecallIdleFollowers()
     {
-        List<GameObject> idleFollowersCopy = new List<GameObject>(idleFollowers);
+        var eligibleFollowers = GetFollowersOfCurrentType(idleFollowers);
+        List<GameObject> idleFollowersCopy = new List<GameObject>(eligibleFollowers);
 
         foreach (GameObject follower in idleFollowersCopy)
         {
@@ -190,14 +191,15 @@ public class FollowerManager : MonoBehaviour
 
     void RecallBusyFollowers()
     {
-        List<GameObject> busyFollowersCopy = new List<GameObject>(busyFollowers);
+        var eligibleFollowers = GetFollowersOfCurrentType(busyFollowers);
+        List<GameObject> busyFollowersCopy = new List<GameObject>(eligibleFollowers);
 
         foreach (GameObject follower in busyFollowersCopy)
         {
             Follower followerScript = follower.GetComponent<Follower>();
             if (followerScript != null)
             {
-                followerScript.SetBusy(false); // Reset the busy state
+                followerScript.SetBusy(false);
 
                 // Notify Interactable that follower has been recalled
                 EventManager.TriggerEvent(EventNames.FollowerRecalled, follower);
@@ -209,7 +211,8 @@ public class FollowerManager : MonoBehaviour
 
     void RecallCarryingFollowers()
     {
-        List<GameObject> carryingFollowersCopy = new List<GameObject>(carryingFollowers);
+        var eligibleFollowers = GetFollowersOfCurrentType(carryingFollowers);
+        List<GameObject> carryingFollowersCopy = new List<GameObject>(eligibleFollowers);
 
         foreach (GameObject follower in carryingFollowersCopy)
         {
