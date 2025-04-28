@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class FollowerManager : MonoBehaviour
 {
-    public static FollowerManager Instance;
+    private FollowerManager followerManager;
 
     public float detectionRadius = 5f; // Radius to detect and add followers
     public float removalRadius = 7f; // Radius to remove followers
@@ -24,19 +24,6 @@ public class FollowerManager : MonoBehaviour
     public List<GameObject> idleFollowers = new List<GameObject>(); // Idle followers
     public List<GameObject> busyFollowers = new List<GameObject>(); // Busy followers
     public List<GameObject> carryingFollowers = new List<GameObject>(); // Carrying followers
-
-    void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
 
     private void OnEnable()
     {
@@ -59,6 +46,7 @@ public class FollowerManager : MonoBehaviour
         currentType = FollowerType.Any;
         currentTypeDisplay.text = "Any";
         currentTypeDisplay.color = Color.white;
+        followerManager = FindObjectOfType<FollowerManager>();
     }
 
     void Update()

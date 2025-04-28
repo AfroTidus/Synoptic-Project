@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -198,7 +199,12 @@ public class PlayerController : MonoBehaviour
             {
                 Respawn();
             }
+        }
 
+        if (other.CompareTag("End"))
+        {
+            SceneManager.LoadScene("Menu");
+            Debug.Log("Back to menu");
         }
     }
 

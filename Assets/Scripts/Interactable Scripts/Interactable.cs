@@ -6,6 +6,8 @@ using UnityEngine;
 
 public abstract class Interactable : MonoBehaviour
 {
+    public FollowerManager followerManager;
+
     public int softCap;
     public int hardCap;
 
@@ -42,6 +44,8 @@ public abstract class Interactable : MonoBehaviour
         {
             UpdateCounter();
         }
+
+        followerManager = FindObjectOfType<FollowerManager>();
     }
 
     protected virtual void Update()

@@ -6,6 +6,7 @@ using UnityEngine.AI;
 public abstract class Follower : MonoBehaviour
 {
     private Transform player;
+    public FollowerManager manager;
     private NavMeshAgent agent;
 
     [Header("Throw Settings")]
@@ -31,6 +32,7 @@ public abstract class Follower : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         player = GameObject.Find("Player").transform;
+        manager = FindObjectOfType<FollowerManager>();
 
         rb.isKinematic = true;
     }
@@ -66,7 +68,7 @@ public abstract class Follower : MonoBehaviour
             agent.SetDestination(player.position);
 
             // Check if we've reached the player's radius
-            if (distanceToPlayer <= FollowerManager.Instance.detectionRadius)
+            if (distanceToPlayer <= manager.detectionRadius)
             {
                 SetReturning(false);
             }
