@@ -176,6 +176,7 @@ public abstract class CarryInteractable : Interactable
                 follower.SetDelivering(false);
                 follower.SetCarrying(false);
                 follower.SetBusy(false);
+                follower.SetReturning(true);
             }
         }
 

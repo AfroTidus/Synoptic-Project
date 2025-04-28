@@ -20,9 +20,10 @@ public class FollowerManager : MonoBehaviour
     public FollowerType currentType = FollowerType.Any;
 
     public List<GameObject> followers = new List<GameObject>(); // Followers within proximity
+    public List<GameObject> returningFollowers = new List<GameObject>();
     public List<GameObject> idleFollowers = new List<GameObject>(); // Idle followers
     public List<GameObject> busyFollowers = new List<GameObject>(); // Busy followers
-    public List<GameObject> carryingFollowers = new List<GameObject>();
+    public List<GameObject> carryingFollowers = new List<GameObject>(); // Carrying followers
 
     void Awake()
     {
@@ -146,8 +147,25 @@ public class FollowerManager : MonoBehaviour
             detectedSet.Add(follower);
 
             // Add new followers if within detection range and not already in any list
-            if (!followers.Contains(follower) && !idleFollowers.Contains(follower) && !busyFollowers.Contains(follower) &&
-                Vector3.Distance(transform.position, follower.transform.position) <= detectionRadius)
+            //if (!followers.Contains(follower) && !idleFollowers.Contains(follower) && !busyFollowers.Contains(follower) &&
+            //    Vector3.Distance(transform.position, follower.transform.position) <= detectionRadius)
+            //{
+            //    followers.Add(follower);
+            //}
+
+            float distance = Vector3.Distance(transform.position, follower.transform.position);
+
+            // Check if follower is returning and has reached the player
+            Follower followerScript = follower.GetComponent<Follower>();
+            if (followerScript != null && followerScript.IsReturning() && distance <= detectionRadius)
+            {
+                followerScript.SetReturning(false);
+            }
+
+            // Add new followers if within detection range and not already in any list
+            if (!followers.Contains(follower) && !idleFollowers.Contains(follower) &&
+                !busyFollowers.Contains(follower) && !returningFollowers.Contains(follower) &&
+                distance <= detectionRadius)
             {
                 followers.Add(follower);
             }
@@ -183,8 +201,8 @@ public class FollowerManager : MonoBehaviour
             Follower followerScript = follower.GetComponent<Follower>();
             if (followerScript != null)
             {
-                followerScript.SetIdle(false);
-                SetFollowerState(follower, FollowerState.Following);
+                followerScript.SetReturning(true);
+                SetFollowerState(follower, FollowerState.Returning);
             }
         }
     }
@@ -200,11 +218,12 @@ public class FollowerManager : MonoBehaviour
             if (followerScript != null)
             {
                 followerScript.SetBusy(false);
+                followerScript.SetReturning(true);
 
                 // Notify Interactable that follower has been recalled
                 EventManager.TriggerEvent(EventNames.FollowerRecalled, follower);
 
-                Debug.Log(follower.name + " recalled from busy and moved to followers list.");
+                Debug.Log(follower.name + " recalled from busy and moved to returning list.");
             }
         }
     }
@@ -220,6 +239,8 @@ public class FollowerManager : MonoBehaviour
             if (followerScript != null)
             {
                 followerScript.SetCarrying(false);
+                followerScript.SetReturning(true);
+
                 // This will trigger the CarryInteractable to release the object
                 EventManager.TriggerEvent(EventNames.FollowerRecalled, follower);
             }
@@ -233,7 +254,11 @@ public class FollowerManager : MonoBehaviour
 
         Vector3 targetPosition = player.lockedInteractable.transform.position;
 
-        var followersToCommand = GetFollowersOfCurrentType(followers);
+        var allAvailableFollowers = new List<GameObject>();
+        allAvailableFollowers.AddRange(followers);
+        allAvailableFollowers.AddRange(returningFollowers);
+
+        var followersToCommand = GetFollowersOfCurrentType(allAvailableFollowers);
 
         foreach (GameObject followerObj in followersToCommand)
         {
@@ -264,6 +289,7 @@ public class FollowerManager : MonoBehaviour
     {
         // Remove the follower from all lists
         followers.Remove(follower);
+        returningFollowers.Remove(follower);
         idleFollowers.Remove(follower);
         busyFollowers.Remove(follower);
         carryingFollowers.Remove(follower);
@@ -274,6 +300,9 @@ public class FollowerManager : MonoBehaviour
         {
             case FollowerState.Following:
                 followers.Add(follower);
+                break;
+            case FollowerState.Returning:
+                returningFollowers.Add(follower);
                 break;
             case FollowerState.Idle:
                 idleFollowers.Add(follower);
@@ -315,6 +344,10 @@ public class FollowerManager : MonoBehaviour
             {
                 SetFollowerState(follower, FollowerState.Busy);
             }
+            else if (followerScript.IsReturning())
+            {
+                SetFollowerState(follower, FollowerState.Returning);
+            }
             else
             {
                 SetFollowerState(follower, FollowerState.Following);
@@ -343,6 +376,7 @@ public class FollowerManager : MonoBehaviour
 public enum FollowerState
 {
     Following, // Actively following the player
+    Returning, // Trying to reach the player but not in radius yet
     Idle,      // Idle and not following the player
     Busy,      // Busy with a task
     Carrying,

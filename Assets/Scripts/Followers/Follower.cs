@@ -19,6 +19,7 @@ public abstract class Follower : MonoBehaviour
 
     private Rigidbody rb;
     private bool isIdle = false;
+    private bool isReturning = false;
     private bool isBusy = false;
     private bool isCarrying = false;
     private bool isDelivering = false;
@@ -58,7 +59,22 @@ public abstract class Follower : MonoBehaviour
         // If the follower is unavailable player
         if (isIdle || isBusy || isThrown || isDelivering) return;
 
-        agent.SetDestination(player.position);
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+
+        if (isReturning)
+        {
+            agent.SetDestination(player.position);
+
+            // Check if we've reached the player's radius
+            if (distanceToPlayer <= FollowerManager.Instance.detectionRadius)
+            {
+                SetReturning(false);
+            }
+        }
+        else
+        {
+            agent.SetDestination(player.position);
+        }
 
         // Rotate to face the player
         Vector3 lookDirection = (player.position - transform.position).normalized;
@@ -68,7 +84,7 @@ public abstract class Follower : MonoBehaviour
 
     public void Throw()
     {
-        if (player == null || rb == null || isThrown || isCarrying) return;
+        if (player == null || rb == null || isThrown || isCarrying || isReturning) return;
 
         Debug.Log(name + " is being thrown!");
 
@@ -88,15 +104,20 @@ public abstract class Follower : MonoBehaviour
         Vector3 launchDirection = (player.forward + Vector3.up * 0.2f).normalized;
         rb.AddForce(launchDirection * throwForce, ForceMode.Impulse);
 
-        StartCoroutine(SetIdleAfterThrow());
+        StartCoroutine(CheckForGroundLanding());
         Debug.Log(name + " has been thrown!");
     }
 
     public void MoveToPosition(object positionObj)
     {
-        if (isIdle || isBusy || isDead || isThrown || isCarrying || isDelivering) return;
+        if (isBusy || isDead || isThrown || isCarrying || isDelivering) return;
 
         Vector3 targetPosition = (Vector3)positionObj;
+
+        if (isReturning)
+        {
+            SetReturning(false);
+        }
 
         // Set the follower to busy state while moving to commanded position
         SetBusy(true);
@@ -116,17 +137,36 @@ public abstract class Follower : MonoBehaviour
         }
     }
 
-    private IEnumerator SetIdleAfterThrow()
+    private IEnumerator CheckForGroundLanding()
     {
-        // Wait for the throw duration
-        yield return new WaitForSeconds(throwDuration);
+        bool hasLanded = false;
 
-        // Re-enable the NavMeshAgent and disable physics
+        while (!hasLanded)
+        {
+            if (IsGrounded() && Mathf.Abs(rb.velocity.y) < 0.1f)
+            {
+                hasLanded = true;
+            }
+
+            yield return null;
+        }
+
+        FinishThrow();
+    }
+
+    private void FinishThrow()
+    {
         rb.isKinematic = true;
         agent.enabled = true;
         isThrown = false;
 
         SetIdle(true);
+    }
+
+    private bool IsGrounded()
+    {
+        float raycastDistance = 0.5f;
+        return Physics.Raycast(transform.position, Vector3.down, raycastDistance);
     }
 
     public void SetIdle(bool idle)
@@ -139,6 +179,22 @@ public abstract class Follower : MonoBehaviour
     public bool IsIdle()
     {
         return isIdle;
+    }
+
+    public void SetReturning(bool returning)
+    {
+        isReturning = returning;
+        if (returning)
+        {
+            isIdle = false;
+            isBusy = false;
+        }
+        NotifyStateChange();
+    }
+
+    public bool IsReturning()
+    {
+        return isReturning;
     }
 
     public void SetBusy(bool busy)

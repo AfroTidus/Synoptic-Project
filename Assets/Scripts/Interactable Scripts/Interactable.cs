@@ -82,6 +82,7 @@ public abstract class Interactable : MonoBehaviour
                 {
                     followerScript.SetBusy(false);
                     followerScript.SetCarrying(false);
+                    followerScript.SetReturning(true);
                 }
                 Workers.Remove(worker);
             }
@@ -96,26 +97,11 @@ public abstract class Interactable : MonoBehaviour
                 !Workers.Contains(follower) && Workers.Count < hardCap)
             {
                 followerScript.SetBusy(true);
+                followerScript.SetReturning(false);
+
                 Workers.Add(follower);
             }
         }
-
-        // Remove followers that are outside the radius
-        //Workers.RemoveAll(follower => {
-        //    if (follower == null) return true; // Remove if destroyed
-
-        //    float distance = Vector3.Distance(transform.position, follower.transform.position);
-        //    if (distance > removalRadius)
-        //    {
-        //        Follower followerScript = follower.GetComponent<Follower>();
-        //        if (followerScript != null)
-        //        {
-        //            followerScript.SetBusy(false); // Reset the busy state
-        //        }
-        //        return true; // Remove from Workers list
-        //    }
-        //    return false; // Keep in Workers list
-        //});
 
         UpdateCounter();
     }

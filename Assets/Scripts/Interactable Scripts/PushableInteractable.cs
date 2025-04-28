@@ -93,6 +93,7 @@ public class PushableInteractable : Interactable
             if (follower != null)
             {
                 follower.SetBusy(false);
+                follower.SetReturning(true);
             }
         }
         Workers.Clear();
