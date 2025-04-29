@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class FollowerManager : MonoBehaviour
 {
@@ -84,6 +85,11 @@ public class FollowerManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Z))
         {
             CommandFollowersToInteractable();
+        }
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            RemoveFollowers();
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -248,6 +254,26 @@ public class FollowerManager : MonoBehaviour
         {
             Follower follower = followerObj.GetComponent<Follower>();
             follower.MoveToPosition(targetPosition);
+        }
+    }
+
+    // Remove followers
+    void RemoveFollowers()
+    {
+        List<GameObject> eligibleFollowers = new List<GameObject>();
+        eligibleFollowers.AddRange(GetFollowersOfCurrentType(followers));
+        eligibleFollowers.AddRange(GetFollowersOfCurrentType(idleFollowers));
+        eligibleFollowers.AddRange(GetFollowersOfCurrentType(busyFollowers));
+        eligibleFollowers.AddRange(GetFollowersOfCurrentType(carryingFollowers));
+        eligibleFollowers.AddRange(GetFollowersOfCurrentType(returningFollowers));
+
+        foreach (GameObject follower in eligibleFollowers)
+        {
+            Follower followerScript = follower.GetComponent<Follower>();
+            if (followerScript != null && !followerScript.IsDead())
+            {
+                EventManager.TriggerEvent(EventNames.FollowerDeath, follower);
+            }
         }
     }
 

@@ -8,6 +8,7 @@ TagManager:
   - Spawner
   - Death
   - End
+  - Gate
   layers:
   - Default
   - TransparentFX

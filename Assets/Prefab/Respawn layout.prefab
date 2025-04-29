@@ -383,10 +383,9 @@ GameObject:
   - component: {fileID: 5793455122514888839}
   - component: {fileID: 4396369846270312}
   - component: {fileID: 9051388206356098138}
-  - component: {fileID: 8071374077074200356}
   m_Layer: 0
   m_Name: Respawn Gate 1
-  m_TagString: Untagged
+  m_TagString: Gate
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -477,18 +476,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8071374077074200356
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3424401834529688995}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3862d0fdea593834a90bcd4e234313c8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &5141212191784331861
 GameObject:
   m_ObjectHideFlags: 0
@@ -606,10 +593,9 @@ GameObject:
   - component: {fileID: 20601946965242417}
   - component: {fileID: 311893179417786428}
   - component: {fileID: 9122740692044055371}
-  - component: {fileID: 1382817337112369864}
   m_Layer: 0
   m_Name: Respawn Gate 3
-  m_TagString: Untagged
+  m_TagString: Gate
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -700,18 +686,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1382817337112369864
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5839780707002198903}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3862d0fdea593834a90bcd4e234313c8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7790211086762371316
 GameObject:
   m_ObjectHideFlags: 0
@@ -724,10 +698,9 @@ GameObject:
   - component: {fileID: 8939756838281847364}
   - component: {fileID: 9001719076103361581}
   - component: {fileID: 376918895384116700}
-  - component: {fileID: 2038609412210440493}
   m_Layer: 0
   m_Name: Respawn Gate 2
-  m_TagString: Untagged
+  m_TagString: Gate
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -818,15 +791,3 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2038609412210440493
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7790211086762371316}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3862d0fdea593834a90bcd4e234313c8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

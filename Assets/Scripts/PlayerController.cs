@@ -201,6 +201,13 @@ public class PlayerController : MonoBehaviour
             nearSpawner = true;
         }
 
+        if (other.CompareTag("Gate"))
+        {
+            EventManager.TriggerEvent(EventNames.SpawnPointUpdate);
+            other.gameObject.SetActive(false);
+            Debug.Log("Gate Triggered");
+        }
+
         if (other.CompareTag("Death"))
         {
             if (respawnPoint != null)
