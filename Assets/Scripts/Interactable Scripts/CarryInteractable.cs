@@ -6,20 +6,18 @@ using UnityEngine.AI;
 public abstract class CarryInteractable : Interactable
 {
     private bool isBeingCarried = false;
-    private List<Transform> carriers = new List<Transform>();
+    private List<Transform> carriers = new List<Transform>(); // Current followers carrying it
     public float carryOffset = 2f; // Vertical offset when being carried
 
     [Header("Destination Settings")]
-    //public Transform destination;
     private Transform currentDestination = null;
     public float destinationTriggerRadius = 5f;
     public float destinationReachRadius = 1f;
     private bool movingToDestination = false;
 
-    private float destinationCheckCooldown = 0.5f;
+    private float destinationCheckCooldown = 0.5f; // Time for when destination was last checked
     private float lastDestinationCheckTime = 0f;
 
-    // Start is called before the first frame update
     protected override void OnSoftCapReached()
     {
         if (Workers.Count > 0 && !isBeingCarried)
@@ -79,6 +77,7 @@ public abstract class CarryInteractable : Interactable
         {
             UpdateCarryPosition();
 
+            // Sporadically check the for nearest spawner for delivery
             if (Time.time - lastDestinationCheckTime > destinationCheckCooldown)
             {
                 FindNearestSpawner();
@@ -96,7 +95,7 @@ public abstract class CarryInteractable : Interactable
                 }
                 else if (movingToDestination && distanceToDest <= destinationReachRadius)
                 {
-                    //Logic before destruction
+                    // Logic before destruction
                     OnDestinationReached();
                     ReleaseWorkers();
                     Destroy(gameObject);
@@ -110,6 +109,7 @@ public abstract class CarryInteractable : Interactable
         GameObject[] spawners = GameObject.FindGameObjectsWithTag("Spawner");
         if (spawners.Length == 0) return;
 
+        // Clear nearest spawner before looking
         Transform nearestSpawner = null;
         float minDistance = float.MaxValue;
 
@@ -123,6 +123,7 @@ public abstract class CarryInteractable : Interactable
             }
         }
 
+        // If its the same spawner skip
         if (nearestSpawner != currentDestination)
         {
             currentDestination = nearestSpawner;
@@ -133,6 +134,7 @@ public abstract class CarryInteractable : Interactable
         }
     }
 
+    // Different implementation depending on deliverable type
     protected abstract void OnDestinationReached();
 
     private void UpdateCarryPosition()

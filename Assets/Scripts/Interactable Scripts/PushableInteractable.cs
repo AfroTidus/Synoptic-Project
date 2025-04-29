@@ -9,13 +9,18 @@ using UnityEngine.AI;
 
 public class PushableInteractable : Interactable
 {
-    public Transform destination;
+    public Transform destination; // End goal
+
     public float moveSpeed = 1f;
-    public bool willBeWalkable;
+
+    public bool willBeWalkable; // If followers can walk on it at the end
+
     private bool isMoving = false;
     private bool reachedDestination = false;
     private Vector3 initialPosition;
-    private float progress = 0f;
+
+    private float progress = 0f; // How far along
+
     private NavMeshSurface navMeshSurface;
     private NavMeshModifier navMeshModifier;
 
@@ -67,6 +72,7 @@ public class PushableInteractable : Interactable
         float speedMultiplier = Mathf.Clamp((float)Workers.Count / softCap, 1f, 2f);
         progress += Time.deltaTime * moveSpeed * speedMultiplier;
         progress = Mathf.Clamp01(progress);
+        // Keep progress between 0 and 1
 
         // Move the object
         Vector3 targetPosition = Vector3.Lerp(initialPosition, destination.position, progress);
@@ -81,6 +87,7 @@ public class PushableInteractable : Interactable
 
     private void ReachedDestination()
     {
+        // Stop being interactable
         isMoving = false;
         reachedDestination = true;
         counter.enabled = false;
@@ -98,6 +105,7 @@ public class PushableInteractable : Interactable
         }
         Workers.Clear();
 
+        // Rebuild NavMesh if its going to be walkable for followers
         if (navMeshModifier != null)
         {
             navMeshModifier.enabled = false;
@@ -108,6 +116,7 @@ public class PushableInteractable : Interactable
         }
     }
 
+    // Set target destination
     private void SetWorkerDestinations(Vector3 targetPos)
     {
         foreach (GameObject worker in Workers)

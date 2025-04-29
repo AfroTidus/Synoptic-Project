@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour
 {
     private CharacterController characterController;
     private Rigidbody rb;
+
+    // Camera controls
     public Transform cam;
     public float speed = 6f;
     public float turnSmoothTime = 0.1f;
@@ -15,6 +17,7 @@ public class PlayerController : MonoBehaviour
 
     public Transform respawnPoint;
 
+    // Lock on variables
     public float lockOnRange = 5f;
     public LayerMask interactableLayer;
     public List<Interactable> nearbyInteractables = new List<Interactable>();
@@ -50,6 +53,7 @@ public class PlayerController : MonoBehaviour
         float gravity = -9.81f;
         Vector3 velocity = new Vector3(0, gravity * Time.deltaTime, 0);
 
+        //check player input
         if (direction.magnitude >= 0.1f)
         {
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
@@ -67,6 +71,7 @@ public class PlayerController : MonoBehaviour
 
     void CheckInteractables()
     {
+        // Player inputs
         if (Input.GetKeyDown(KeyCode.E))
         {
             if (nearSpawner)
@@ -108,6 +113,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // Unlock from interactable if out of ranger
     private void CheckLockedInteractableDistance()
     {
         if (lockedInteractable != null)
@@ -120,6 +126,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // Find nearby interactables
     void DetectNearbyInteractables()
     {
         nearbyInteractables.Clear();
@@ -152,6 +159,7 @@ public class PlayerController : MonoBehaviour
         currentInteractableIndex = index;
     }
 
+    // Cycle through interactables in range
     void CycleInteractables()
     {
         DetectNearbyInteractables();

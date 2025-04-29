@@ -11,10 +11,8 @@ public abstract class Follower : MonoBehaviour
 
     [Header("Throw Settings")]
     public float speed = 5f; // Speed of the follower
-    public float avoidanceDistance = 1.5f;
     public float throwForce = 15f; // Force applied when thrown
     public float throwOffset = 1.5f; // Offset in front of the player
-    public float throwDuration = 1.5f; // Time before follower resumes following
 
     public FollowerType followerType;
 
@@ -29,6 +27,7 @@ public abstract class Follower : MonoBehaviour
 
     private void Awake()
     {
+        // Gather needed assignments
         rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         player = GameObject.Find("Player").transform;
@@ -58,7 +57,7 @@ public abstract class Follower : MonoBehaviour
             return;
         }
 
-        // If the follower is unavailable player
+        // If the follower is unavailable to the player
         if (isIdle || isBusy || isThrown || isDelivering) return;
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
@@ -67,7 +66,7 @@ public abstract class Follower : MonoBehaviour
         {
             agent.SetDestination(player.position);
 
-            // Check if we've reached the player's radius
+            // Check if inside the player's radius
             if (distanceToPlayer <= manager.detectionRadius)
             {
                 SetReturning(false);
@@ -86,9 +85,10 @@ public abstract class Follower : MonoBehaviour
 
     public void Throw()
     {
+        // If the follower is unavailable to be thrown
         if (player == null || rb == null || isThrown || isCarrying || isReturning) return;
 
-        Debug.Log(name + " is being thrown!");
+        Debug.Log(name + " is being thrown");
 
         agent.enabled = false;
         rb.isKinematic = false;
@@ -107,7 +107,7 @@ public abstract class Follower : MonoBehaviour
         rb.AddForce(launchDirection * throwForce, ForceMode.Impulse);
 
         StartCoroutine(CheckForGroundLanding());
-        Debug.Log(name + " has been thrown!");
+        Debug.Log(name + " has been thrown");
     }
 
     public void MoveToPosition(object positionObj)
@@ -122,7 +122,7 @@ public abstract class Follower : MonoBehaviour
         }
 
         // Set the follower to busy state while moving to commanded position
-        SetBusy(true);
+        // SetBusy(true);
 
         // Set the NavMeshAgent destination
         agent.SetDestination(targetPosition);
@@ -132,7 +132,8 @@ public abstract class Follower : MonoBehaviour
     private void OnDeathEvent(object followerObj)
     {
         GameObject follower = (GameObject)followerObj;
-        if (follower == this.gameObject && !isDead) // Check if this is the follower that should die
+        // Check if this is the follower that should die
+        if (follower == this.gameObject && !isDead)
         {
             SetDead(true);
             Destroy(gameObject, 0.5f);
@@ -145,6 +146,7 @@ public abstract class Follower : MonoBehaviour
 
         while (!hasLanded)
         {
+            // Check for ground touch and vertical velocity
             if (IsGrounded() && Mathf.Abs(rb.velocity.y) < 0.1f)
             {
                 hasLanded = true;
@@ -254,14 +256,3 @@ public abstract class Follower : MonoBehaviour
         EventManager.TriggerEvent(EventNames.FollowerStateChanged, this.gameObject);
     }
 }
-
-//// Calculate distance to the player
-//float distance = Vector3.Distance(transform.position, player.position);
-
-//// Maintain distance from the player
-//if (Mathf.Abs(distance - stoppingDistance) > 0.1f)
-//{
-//    Vector3 direction = (transform.position - player.position).normalized;
-//    Vector3 targetPosition = player.position + direction * stoppingDistance;
-//    //transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
-//}

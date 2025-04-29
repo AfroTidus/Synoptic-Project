@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class DestructableInteractable : Interactable
 {
+    // Release followers and destroy object
     protected override void OnSoftCapReached()
     {
         ReleaseWorkers();

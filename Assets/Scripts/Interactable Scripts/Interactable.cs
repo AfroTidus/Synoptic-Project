@@ -59,12 +59,12 @@ public abstract class Interactable : MonoBehaviour
         // Check if the soft cap is reached
         if (Workers.Count >= softCap)
         {
-            //Debug.Log("Soft cap reached!");
+            //Debug.Log("Soft cap reached");
             OnSoftCapReached();
         }
         else if (Workers.Count < softCap)
         {
-            //Debug.Log("Soft cap no longer reached.");
+            //Debug.Log("Soft cap not reached");
             OnSoftCapNotReached();
         }
     }
@@ -74,6 +74,7 @@ public abstract class Interactable : MonoBehaviour
         // Detect followers within the radius
         Collider[] detectedFollowers = Physics.OverlapSphere(transform.position, detectionRadius, followerLayer);
 
+        // Remove followers outside of radius
         foreach (GameObject worker in new List<GameObject>(Workers))
         {
             if (worker == null) continue;
@@ -92,6 +93,7 @@ public abstract class Interactable : MonoBehaviour
             }
         }
 
+        // Add followers inside of Radius
         foreach (Collider col in detectedFollowers)
         {
             GameObject follower = col.gameObject;
@@ -110,6 +112,7 @@ public abstract class Interactable : MonoBehaviour
         UpdateCounter();
     }
 
+    // Player recall
     private void OnFollowerRecalled(object followerObj)
     {
         GameObject follower = (GameObject)followerObj;
@@ -127,6 +130,7 @@ public abstract class Interactable : MonoBehaviour
         }
     }
 
+    // Follower Death
     private void OnFollowerDeath(object followerObj)
     {
         GameObject follower = (GameObject)followerObj;
@@ -165,6 +169,7 @@ public abstract class Interactable : MonoBehaviour
         counter.text = (Workers.Count + " / " + softCap);
     }
 
+    // For Testing
     void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
@@ -174,6 +179,7 @@ public abstract class Interactable : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, removalRadius);
     }
 
+    // Will depend on interactable type
     protected abstract void OnSoftCapReached();
     protected abstract void OnSoftCapNotReached();
 }

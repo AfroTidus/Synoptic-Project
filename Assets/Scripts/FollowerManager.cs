@@ -6,8 +6,6 @@ using UnityEngine;
 
 public class FollowerManager : MonoBehaviour
 {
-    private FollowerManager followerManager;
-
     public float detectionRadius = 5f; // Radius to detect and add followers
     public float removalRadius = 7f; // Radius to remove followers
     public LayerMask followerLayer; // Layer to detect followers
@@ -17,10 +15,10 @@ public class FollowerManager : MonoBehaviour
     public TextMeshProUGUI followerDisplay;
     public TextMeshProUGUI currentTypeDisplay;
 
-    public FollowerType currentType = FollowerType.Any;
+    public FollowerType currentType = FollowerType.Any; // Follower type player has selected
 
     public List<GameObject> followers = new List<GameObject>(); // Followers within proximity
-    public List<GameObject> returningFollowers = new List<GameObject>();
+    public List<GameObject> returningFollowers = new List<GameObject>(); // Returning followers
     public List<GameObject> idleFollowers = new List<GameObject>(); // Idle followers
     public List<GameObject> busyFollowers = new List<GameObject>(); // Busy followers
     public List<GameObject> carryingFollowers = new List<GameObject>(); // Carrying followers
@@ -46,7 +44,6 @@ public class FollowerManager : MonoBehaviour
         currentType = FollowerType.Any;
         currentTypeDisplay.text = "Any";
         currentTypeDisplay.color = Color.white;
-        followerManager = FindObjectOfType<FollowerManager>();
     }
 
     void Update()
@@ -63,6 +60,7 @@ public class FollowerManager : MonoBehaviour
             EventManager.TriggerEvent(EventNames.BelowMaxFollowers, this.gameObject);
         }
 
+        // Player Inputs
         if (Input.GetKeyDown(KeyCode.Q))
         {
             ExecuteFollowerThrow();
@@ -134,13 +132,6 @@ public class FollowerManager : MonoBehaviour
             GameObject follower = col.gameObject;
             detectedSet.Add(follower);
 
-            // Add new followers if within detection range and not already in any list
-            //if (!followers.Contains(follower) && !idleFollowers.Contains(follower) && !busyFollowers.Contains(follower) &&
-            //    Vector3.Distance(transform.position, follower.transform.position) <= detectionRadius)
-            //{
-            //    followers.Add(follower);
-            //}
-
             float distance = Vector3.Distance(transform.position, follower.transform.position);
 
             // Check if follower is returning and has reached the player
@@ -163,6 +154,7 @@ public class FollowerManager : MonoBehaviour
         followers.RemoveAll(follower => !detectedSet.Contains(follower));
     }
 
+    // Throw follower
     void ExecuteFollowerThrow()
     {
         var eligibleFollowers = GetFollowersOfCurrentType(followers);
@@ -179,6 +171,7 @@ public class FollowerManager : MonoBehaviour
         }
     }
 
+    // Recall idle follower
     void RecallIdleFollowers()
     {
         var eligibleFollowers = GetFollowersOfCurrentType(idleFollowers);
@@ -195,6 +188,7 @@ public class FollowerManager : MonoBehaviour
         }
     }
 
+    // Recall busy follower
     void RecallBusyFollowers()
     {
         var eligibleFollowers = GetFollowersOfCurrentType(busyFollowers);
@@ -216,6 +210,7 @@ public class FollowerManager : MonoBehaviour
         }
     }
 
+    // Recall carrying follower
     void RecallCarryingFollowers()
     {
         var eligibleFollowers = GetFollowersOfCurrentType(carryingFollowers);
@@ -235,6 +230,7 @@ public class FollowerManager : MonoBehaviour
         }
     }
 
+    // Charge command
     void CommandFollowersToInteractable()
     {
         PlayerController player = FindObjectOfType<PlayerController>();
@@ -255,6 +251,7 @@ public class FollowerManager : MonoBehaviour
         }
     }
 
+    // Filter by follower type method
     private List<GameObject> GetFollowersOfCurrentType(List<GameObject> followerList)
     {
         if (currentType == FollowerType.Any)
@@ -273,6 +270,7 @@ public class FollowerManager : MonoBehaviour
         return filteredFollowers;
     }
 
+    // Sort followers into relevant list
     public void SetFollowerState(GameObject follower, FollowerState state)
     {
         // Remove the follower from all lists
@@ -308,6 +306,7 @@ public class FollowerManager : MonoBehaviour
         Debug.Log($"{follower.name} state changed to {state}");
     }
 
+    // When a follower changes state set it here as well
     private void OnFollowerStateChanged(object followerObj)
     {
         GameObject follower = (GameObject)followerObj;

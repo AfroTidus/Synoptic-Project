@@ -20,6 +20,7 @@ public class PoisonKiller : MonoBehaviour
         }
     }
 
+    // protect poison followers
     private bool IsPoisonFollower(Follower follower)
     {
         return follower is PoisonFollower;

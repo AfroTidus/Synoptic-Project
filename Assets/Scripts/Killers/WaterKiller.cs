@@ -20,6 +20,7 @@ public class WaterKiller : MonoBehaviour
         }
     }
 
+    // protect water followers
     private bool IsWaterFollower(Follower follower)
     {
         return follower is WaterFollower;

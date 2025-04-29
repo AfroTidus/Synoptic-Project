@@ -20,6 +20,7 @@ public class FireKiller : MonoBehaviour
         }
     }
 
+    // protect fire followers
     private bool IsFireFollower(Follower follower)
     {
         return follower is FireFollower;

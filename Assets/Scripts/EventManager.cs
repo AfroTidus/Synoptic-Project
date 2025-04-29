@@ -85,6 +85,7 @@ public class EventManager : MonoBehaviour
     }
 }
 
+// List of hardcoded events
 public static class EventNames
 {
     public const string PlayerEnteredSpawnRadius = "PlayerEnteredSpawnRadius";
